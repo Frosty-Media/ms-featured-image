@@ -1,11 +1,11 @@
 <?php
 
-namespace FrostyMedia\MSFeaturedImage\Includes;
+namespace FrostyMedia\MSFeaturedImage;
 
 /**
  * Class Shortcode
  *
- * @package FrostyMedia\MSFeaturedImage\Includes
+ * @package FrostyMedia\MSFeaturedImage
  */
 class Shortcode {
 
@@ -20,8 +20,7 @@ class Shortcode {
      * @return Shortcode|object
      */
     public static function instance() {
-
-        if ( null === self::$instance ) {
+        if ( self::$instance === null ) {
             self::$instance = new self;
         }
 
@@ -29,7 +28,7 @@ class Shortcode {
     }
 
     public static function addShortcode() {
-        add_shortcode( 'multisite-featured-image', array( self::instance(), 'allSitesShortcode' ) );
+        add_shortcode( 'multisite-featured-image', [ self::instance(), 'allSitesShortcode' ] );
     }
 
     /**
@@ -41,9 +40,9 @@ class Shortcode {
      */
     public function allSitesShortcode( $atts ) {
         $site_id = defined( 'SITE_ID_CURRENT_SITE' ) ? SITE_ID_CURRENT_SITE : null;
-        $atts = shortcode_atts( array(
+        $atts    = shortcode_atts( [
             'ignore-blog-id' => $site_id,
-        ), $atts, 'multisite-featured-image' );
+        ], $atts, 'multisite-featured-image' );
 
         wp_enqueue_style( 'ms-featured-image' );
 
@@ -63,9 +62,13 @@ class Shortcode {
     public static function getAllBlogs( $ignore_blog_id = null ) {
         global $wpdb;
 
-        $where = ! empty( $ignore_blog_id ) ? "WHERE blog_id != {$ignore_blog_id} AND public = 1 " : 'WHERE public = 1';
+        $where = ! empty( $ignore_blog_id ) ?
+            "WHERE blog_id != $ignore_blog_id AND public = 1" :
+            'WHERE public = 1';
 
-        return $wpdb->get_results( "SELECT blog_id, domain, path FROM $wpdb->blogs {$where}ORDER BY path" );
+        return $wpdb->get_results(
+            "SELECT blog_id, domain, path FROM $wpdb->blogs $where ORDER BY path"
+        );
     }
 
     /**
@@ -81,7 +84,8 @@ class Shortcode {
     public static function getBlogNames( $blog ) {
         global $wpdb;
 
-        return $wpdb->get_results( "SELECT option_value FROM {$wpdb->get_blog_prefix( $blog->blog_id )}options WHERE option_name = 'blogname' " );
+        return $wpdb->get_results(
+            "SELECT option_value FROM {$wpdb->get_blog_prefix( $blog->blog_id )}options WHERE option_name = 'blogname'"
+        );
     }
-
 }

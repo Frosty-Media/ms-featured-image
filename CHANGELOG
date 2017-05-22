@@ -1,0 +1,22 @@
+# Change Log
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](http://keepachangelog.com/)
+and this project adheres to [Semantic Versioning](http://semver.org/).
+
+## [Unreleased]
+### Added
+
+## [2.1.0] - 2017-04-24
+### Changed
+- Make sure get all sites only returns public blogs.
+
+## [2.0.0] - 2015-11-19
+### Changed
+- Complete rewrite.
+- Deprecated the four helper functions in favor of better prefixed functions. See
+https://frosty.media/?post_type=doc&p=103576 for more info.
+- Update TGM Plugin Activation to `v2.5.2`
+
+## [1.0.0] - 2013-11-26
+- Initial release.

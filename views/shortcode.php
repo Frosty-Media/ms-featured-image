@@ -8,7 +8,7 @@
 		<div class="row">
 			<?php
 
-			$self = \FrostyMedia\MSFeaturedImage\Includes\Shortcode::instance();
+			$self = \FrostyMedia\MSFeaturedImage\Shortcode::instance();
 
 			/**
 			 * Foreach blog search for blog name in respective options table
@@ -21,7 +21,7 @@
 			 *
 			 * @access stdClass $blog->blog_id
 			 */
-			$ignore_blog_id = is_int( $atts['ignore-blog-id'] ) ? absint( $atts['ignore-blog-id'] ) : null;
+			$ignore_blog_id = is_numeric( $atts['ignore-blog-id'] ) ? absint( $atts['ignore-blog-id'] ) : null;
 			$blogs = $self::getAllBlogs( $ignore_blog_id );
 
 			foreach( $blogs as $key => $blog ) {
@@ -33,7 +33,7 @@
 
 					$url = esc_url( is_ssl() ? 'https://' . $blog->domain . $blog->path : 'http://' . $blog->domain . $blog->path );
 					$title = esc_attr( $name->option_value );
-					$image = \FrostyMedia\MSFeaturedImage\Includes\Common::getSiteFeaturedImage( $blog->blog_id, 'full', false );
+					$image = \FrostyMedia\MSFeaturedImage\Common::getSiteFeaturedImage( $blog->blog_id, 'full', false );
 
 					echo '<div class="col-xs-12 col-sm-6 col-md-4">
 						<figure>

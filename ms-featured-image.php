@@ -2,30 +2,27 @@
 /**
  * Plugin Name: Multisite Featured Image
  * Plugin URI: https://frosty.media/plugins/multisite-featured-image/
- * Description: Adds a featured image to each site in the multisite network.
- * Version: 2.1.0
+ * Description: Adds a featured image to each site in a WordPress Multisite Network.
+ * Version: 3.0.0
  * Author: Austin Passy
  * Author URI: http://austin.passy.co
  * Text Domain: ms-featured-image
  * License: GPL-2.0+
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
- * GitHub Plugin URI: https://github.com/austyfrosty/multisite-featured-image
+ * GitHub Plugin URI: https://github.com/Frosty-Media/ms-featured-image
  * Network: true
  */
 
-namespace FrostyMedia\MSFeaturedImage;
-
-use FrostyMedia\MSFeaturedImage\Includes\FeaturedImage;
-
 // Exit if accessed directly
-if ( !defined( 'ABSPATH' ) ) exit;
+defined( 'ABSPATH' ) || exit;
 
-/**
- * The base plugin class. Plugin definitions and functions used by other classes.
- */
-require_once( plugin_dir_path( __FILE__ ) . 'includes/FeaturedImage.php' );
+require_once __DIR__ . '/src/Psr4Autoloader.php';
+
+( new \FrostyMedia\MSFeaturedImage\Psr4Autoloader() )
+    ->addNamespace( 'FrostyMedia\\MSFeaturedImage', __DIR__ . '/src' )
+    ->register();
 
 /**
  * Out of the frying pan, and into the fire.
  */
-FeaturedImage::instance( __FILE__ );
+\FrostyMedia\MSFeaturedImage\FeaturedImage::instance( __FILE__ );
