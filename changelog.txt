@@ -1,0 +1,16 @@
+== Changelog ==
+
+<strong>Version 2.1.0 (2017-04-24)</strong>
+
+Make sure get all sites only returns public blogs.
+
+<strong>Version 2.0.0 (11/19/15)</strong>
+
+Complete rewrite.
+Deprecated the four helper functions in favor of better prefixed functions.
+    See https://frosty.media/?post_type=doc&p=103576 for more info.
+Update TGM Plugin Activation to v2.5.2
+
+<strong>Version 1.0.0 (11/26/13)</strong>
+
+Initial release.
