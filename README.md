@@ -1,7 +1,7 @@
 # Multisite Featured Image
 
 * Contributors: [thefrosty](https://github.com/thefrosty)
-* Tags: plugin, theme, update, updater, github, bitbucket, gitlab, remote install
+* Tags: plugin, wordpress, multisite, multisite-network, featured-image 
 * Requires at least: 4.6
 * Requires PHP: 7.0.1
 * Tested up to: 4.7
