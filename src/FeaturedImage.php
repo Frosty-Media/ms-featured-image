@@ -3,17 +3,19 @@
 namespace FrostyMedia\MSFeaturedImage;
 
 use FrostyMedia\MSFeaturedImage\Admin\FeaturedImageAdmin;
-use FrostyMedia\MSFeaturedImage\Admin\FrostyMediaLicense;
+use FrostyMedia\MSFeaturedImage\Admin\SettingsApi;
 
 /**
  * Class FeaturedImage
  *
- * @package FrostyMedia\MSFeaturedImage\Includes
+ * @package FrostyMedia\MSFeaturedImage
  */
 class FeaturedImage {
 
-    const VERSION = '2.1.0';
+    const VERSION = '3.0.0';
     const OPTION_NAME = 'ms_featured_image';
+    const PLUGIN_ID = 'multisite_featured_image';
+    const PLUGIN_NAME = 'Multisite Featured Image';
     const PLUGIN_SLUG = 'ms-featured-image';
 
     /**
@@ -24,63 +26,36 @@ class FeaturedImage {
     protected static $instance;
 
     /**
-     * @var string $base_file
-     */
-    private $base_file;
-
-    /**
      * Return an instance of this class.
      *
-     * @return self|object
+     * @return $this
      */
-    public static function instance( $base_file = null ) {
-
+    public static function instance() {
         if ( null === self::$instance ) {
             self::$instance = new self;
-            if ( ! is_null( $base_file ) ) {
-                self::$instance->base_file = $base_file;
-            }
             self::$instance->includes();
-            self::$instance->instansiations();
-            self::$instance->addActions();
+            self::$instance->instantiations();
         }
 
         return self::$instance;
     }
 
     /**
-     * Include classes.
+     * Include functions file.
      */
     private function includes() {
-        require_once plugin_dir_path( self::get_base_file() ) . 'includes/functions.php';
+        include_once __DIR__ . '/functions.php';
     }
 
     /**
      * Setup our admin class.
      */
-    private function instansiations() {
+    private function instantiations() {
         if ( $this->isAdmin() ) {
-            FeaturedImageAdmin::instance();
-            new FrostyMediaLicense();
+            ( new FeaturedImageAdmin( new SettingsApi() ) )->addHooks();
         } else {
-            Shortcode::instance()->addShortcode();
+            ( new Shortcode() )->addHooks();
         }
-    }
-
-    private function addActions() {
-        add_action( 'wp_enqueue_scripts', [ $this, 'enqueueScripts' ] );
-    }
-
-    /**
-     * Register shortcode styles.
-     */
-    public function enqueueScripts() {
-        wp_register_style(
-            self::PLUGIN_SLUG,
-            plugins_url( '/css/sites.css', dirname( __FILE__ ) ),
-            [],
-            self::VERSION
-        );
     }
 
     /**
@@ -88,35 +63,9 @@ class FeaturedImage {
      *
      * @return bool
      */
-    private function isAdmin( $doing_ajax = true ) {
+    private function isAdmin( bool $doing_ajax = true ): bool {
         return $doing_ajax ?
             is_admin() && ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) :
             is_admin();
-    }
-
-    /**
-     * Return the plugin file path.
-     *
-     * @return string
-     */
-    public static function get_base_file() {
-        return self::instance()->base_file;
-    }
-
-    /**
-     * Return the plugin settings slug.
-     *
-     * @return string.
-     */
-    public static function get_settings_page_hook() {
-        return 'settings_page_' . self::PLUGIN_SLUG;
-    }
-
-    /**
-     * @param string $file
-     * @param null|array $atts
-     */
-    public static function views( $file = '', $atts = null ) {
-        include plugin_dir_path( self::get_base_file() ) . "views/$file";
     }
 }
