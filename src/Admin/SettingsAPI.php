@@ -4,45 +4,65 @@ namespace FrostyMedia\MSFeaturedImage\Admin;
 
 use FrostyMedia\MSFeaturedImage\Common;
 use FrostyMedia\MSFeaturedImage\FeaturedImage;
+use FrostyMedia\MSFeaturedImage\WpHooksInterface;
 
 /**
- * Class SettingsAPI
+ * Class SettingsApi
  *
- * @package FrostyMedia\MSFeaturedImage\Includes\Admin
+ * @package FrostyMedia\MSFeaturedImage\Admin
  */
-class SettingsAPI {
+class SettingsApi implements WpHooksInterface {
+
+    const NONCE_KEY = '_msfi_nonce';
+
+    /** @var string $settings_page_hook */
+    protected $settings_page_hook;
 
     /**
      * settings sections array
      *
-     * @var array
+     * @var array $settings_sections
      */
     private $settings_sections = [];
 
     /**
      * Settings fields array
      *
-     * @var array
+     * @var array $settings_fields
      */
     private $settings_fields = [];
 
     /**
-     * SettingsAPI constructor.
+     * Add class hooks.
      */
-    public function __construct() {
-        add_action( 'admin_enqueue_scripts', [ $this, 'admin_enqueue_scripts' ] );
+    public function addHooks() {
+        add_action( 'admin_enqueue_scripts', [ $this, 'adminEnqueueScripts' ] );
+    }
+
+    /**
+     * @param string $page_slug
+     */
+    public function setSettingsPageHook( string $page_slug ) {
+        $this->settings_page_hook = sprintf( 'settings_page_%s', $page_slug );
+    }
+
+    /**
+     * @return string
+     */
+    public function getSettingsPageHook(): string {
+        return $this->settings_page_hook;
     }
 
     /**
      * Enqueue scripts and styles
+     *
+     * @param string $hook
      */
-    public function admin_enqueue_scripts( $hook ) {
-        if ( FeaturedImage::get_settings_page_hook() !== $hook ) {
+    public function adminEnqueueScripts( $hook ) {
+        if ( $this->getSettingsPageHook() !== $hook ) {
             return;
         }
 
-        wp_enqueue_style( 'wp-color-picker' );
-        wp_enqueue_script( 'wp-color-picker' );
         wp_enqueue_media();
     }
 
@@ -51,7 +71,7 @@ class SettingsAPI {
      *
      * @param array $sections setting sections array
      */
-    public function set_sections( $sections ) {
+    public function setSections( array $sections ) {
         $this->settings_sections = $sections;
     }
 
@@ -60,7 +80,7 @@ class SettingsAPI {
      *
      * @param array $section
      */
-    public function add_section( $section ) {
+    public function addSection( array $section ) {
         $this->settings_sections[] = $section;
     }
 
@@ -69,7 +89,7 @@ class SettingsAPI {
      *
      * @param array $fields settings fields array
      */
-    public function set_fields( $fields ) {
+    public function setFields( array $fields ) {
         $this->settings_fields = $fields;
     }
 
@@ -77,8 +97,7 @@ class SettingsAPI {
      * @param string $section
      * @param string $field
      */
-    public function add_field( $section, $field ) {
-
+    public function addField( string $section, string $field ) {
         $defaults = [
             'name' => '',
             'label' => '',
@@ -86,8 +105,7 @@ class SettingsAPI {
             'type' => 'text',
         ];
 
-        $arg                                 = wp_parse_args( $field, $defaults );
-        $this->settings_fields[ $section ][] = $arg;
+        $this->settings_fields[ $section ][] = wp_parse_args( $field, $defaults );
     }
 
     /**
@@ -98,29 +116,20 @@ class SettingsAPI {
      * This function gets the initiated settings sections and fields. Then
      * registers them to WordPress and ready for use.
      */
-    public function admin_init() {
-        //register settings sections
+    public function adminInit() {
+        // register settings sections
         foreach ( $this->settings_sections as $section ) {
-            if ( false == get_option( $section['id'] ) ) {
-                add_option( $section['id'] );
+            if ( get_option( $section['id'] ) === false ) {
+                add_option( $section['id'], [] );
             }
 
-            if ( isset( $section['desc'] ) && ! empty( $section['desc'] ) ) {
-                $section['desc'] = '<div class="inside">' . $section['desc'] . '</div>';
-                $callback        = create_function( '', 'echo "' . str_replace( '"', '\"', $section['desc'] ) . '";' );
-            } else {
-                $callback = '__return_false';
-            }
-
-            add_settings_section( $section['id'], $section['title'], $callback, $section['id'] );
+            add_settings_section( $section['id'], $section['title'], '__return_false', $section['id'] );
         }
 
-        //register settings fields
+        // register settings fields
         foreach ( $this->settings_fields as $section => $field ) {
             foreach ( $field as $option ) {
-
                 $type = isset( $option['type'] ) ? $option['type'] : 'text';
-
                 $args = [
                     'id' => $option['name'],
                     'desc' => isset( $option['desc'] ) ? $option['desc'] : '',
@@ -132,16 +141,21 @@ class SettingsAPI {
                     'sanitize_callback' => isset( $option['sanitize_callback'] ) ?
                         $option['sanitize_callback'] : '',
                 ];
-                add_settings_field( $section . '[' . $option['name'] . ']', $option['label'], [
-                    $this,
-                    'callback_' . $type,
-                ], $section, $section, $args );
+
+                add_settings_field(
+                    $section . '[' . $option['name'] . ']',
+                    $option['label'],
+                    [ $this, 'callback' . ucfirst( $type ), ],
+                    $section,
+                    $section,
+                    $args
+                );
             }
         }
 
         // creates our settings in the options table
         foreach ( $this->settings_sections as $section ) {
-            register_setting( $section['id'], $section['id'], [ $this, 'sanitize_options' ] );
+            register_setting( $section['id'], $section['id'], [ $this, 'sanitizeOptions' ] );
         }
     }
 
@@ -150,9 +164,8 @@ class SettingsAPI {
      *
      * @param array $args settings field args
      */
-    public function callback_text( $args ) {
-
-        $value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
+    public function callbackText( $args ) {
+        $value = esc_attr( $this->getOption( $args['id'], $args['section'], $args['std'] ) );
         $size  = isset( $args['size'] ) && ! is_null( $args['size'] ) ? $args['size'] : 'regular';
 
         $html = '';
@@ -171,9 +184,8 @@ class SettingsAPI {
      *
      * @param array $args settings field args
      */
-    public function callback_file( $args ) {
-
-        $value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
+    public function callbackFile( $args ) {
+        $value = esc_attr( $this->getOption( $args['id'], $args['section'], $args['std'] ) );
         $id    = $args['section'] . '[' . $args['id'] . ']';
         $desc  = isset( $args['desc'] ) ? $args['desc'] : null;
 
@@ -182,11 +194,11 @@ class SettingsAPI {
         }
 
         $html = '<div class="alignone clear">';
-        $html .= $this->get_the_image( $value );
+        $html .= $this->getTheImage( $value );
         $html .= '<div class="alignleft" style="margin-left: 25px">';
 
         ob_start();
-        $this->callback_text( $args );
+        $this->callbackText( $args );
         $html .= ob_get_clean();
 
         $html .= '<input type="button" class="button wpsf-browse" id="' . $id . '_button" value="Browse" />';
@@ -203,34 +215,16 @@ class SettingsAPI {
     }
 
     /**
-     * @param $value
-     *
-     * @return string
-     */
-    private function get_the_image( $value ) {
-
-        $image_id = ! empty( $value ) ? Common::urlToAttachmentID( $value ) : '';
-
-        if ( ! empty( $image_id ) ) {
-            $html = '<div class="alignleft">' . wp_get_attachment_image( $image_id, [
-                    50,
-                    50,
-                ] ) . '</div>';
-        } else {
-            $html = '<div class="alignleft"><img src="//placehold.it/50?text=FM"></div>';
-        }
-
-        return $html;
-    }
-
-    /**
      * Sanitize callback for Settings API
+     *
+     * @param array $options
+     *
+     * @return array
      */
-    function sanitize_options( $options ) {
-
+    public function sanitizeOptions( $options ) {
         foreach ( $options as $option_slug => $option_value ) {
 
-            $sanitize_callback = $this->get_sanitize_callback( $option_slug );
+            $sanitize_callback = $this->getSanitizeCallback( $option_slug );
 
             // If callback is set, call it
             if ( $sanitize_callback ) {
@@ -255,24 +249,23 @@ class SettingsAPI {
      *
      * @return mixed string or bool false
      */
-    private function get_sanitize_callback( $slug = '' ) {
-
+    private function getSanitizeCallback( $slug = '' ) {
         if ( empty( $slug ) ) {
             return false;
         }
 
         // Iterate over registered fields and see if we can find proper callback
         foreach ( $this->settings_fields as $section => $options ) {
-
             foreach ( $options as $option ) {
-
-                if ( $option['name'] != $slug ) {
+                if ( $option['name'] !== $slug ) {
                     continue;
                 }
 
                 // Return the callback name
-                return isset( $option['sanitize_callback'] ) && is_callable( $option['sanitize_callback'] ) ?
-                    $option['sanitize_callback'] : false;
+                return isset( $option['sanitize_callback'] ) &&
+                       is_callable( $option['sanitize_callback'] ) ?
+                    $option['sanitize_callback'] :
+                    false;
             }
         }
 
@@ -288,8 +281,7 @@ class SettingsAPI {
      *
      * @return string
      */
-    public function get_option( $option, $section, $default = '' ) {
-
+    public function getOption( string $option, string $section, $default = '' ): string {
         $options = get_site_option( $section );
 
         if ( isset( $options[ $option ] ) ) {
@@ -300,111 +292,61 @@ class SettingsAPI {
     }
 
     /**
-     * Show navigation as tab'd menu.
-     *
-     * Shows all the settings section labels as tab
-     */
-    public function show_navigation() {
-
-        $html = '<h2 class="nav-tab-wrapper">';
-
-        foreach ( $this->settings_sections as $tab ) {
-            $html .= sprintf( '<a href="#%1$s" class="nav-tab" id="%1$s-tab">%2$s</a>', $tab['id'], $tab['title'] );
-        }
-
-        $html .= '</h2>';
-
-        echo $html;
-    }
-
-    /**
      * Show the section settings forms
      *
      * This function displays every sections in a different form
      */
-    public function show_forms() { ?>
+    public function showForms() { ?>
         <div class="metabox-holder">
             <div class="postbox">
-                <?php foreach ( $this->settings_sections as $form ) { ?>
+                <?php
+                $action = add_query_arg(
+                    [
+                        'page' => FeaturedImage::PLUGIN_SLUG,
+                        'action' => FeaturedImage::PLUGIN_SLUG,
+                        self::NONCE_KEY => wp_create_nonce( FeaturedImage::PLUGIN_SLUG ),
+                    ],
+                    network_admin_url( 'settings.php' )
+                );
+                foreach ( $this->settings_sections as $form ) { ?>
                     <div id="<?php echo $form['id']; ?>" class="group">
-                        <form method="post" action="<?php echo esc_url( add_query_arg( [
-                            'page' => FeaturedImage::PLUGIN_SLUG,
-                            'action' => 'ms-feat-img',
-                            '_msfi_nonce' => wp_create_nonce( 'ms-feat-img' ),
-                        ], network_admin_url( 'settings.php' ) ) ); ?>">
-
-                            <?php do_action( 'wsa_form_top_' . $form['id'], $form ); ?>
+                        <form method="post" action="<?php echo esc_url( $action ); ?>">
                             <?php settings_fields( $form['id'] ); ?>
                             <?php do_settings_sections( $form['id'] ); ?>
-                            <?php do_action( 'wsa_form_bottom_' . $form['id'], $form ); ?>
-
                             <div style="padding-left: 10px">
-                                <?php submit_button( '', '', FeaturedImage::PLUGIN_SLUG . '_submit' ); ?>
+                                <?php submit_button( null, 'primary', FeaturedImage::PLUGIN_SLUG . '_submit' ); ?>
                             </div>
                         </form>
 
                         <?php
-                        if ( defined( 'WP_LOCAL_DEV' ) && ( WP_LOCAL_DEV || WP_DEBUG ) ) {
-                            echo '<pre>' . print_r( get_option( $form['id'] ), true ) . '</pre>';
+                        if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+                            echo '<pre>' . print_r( get_option( $form['id'], [] ), true ) . '</pre>';
                         } ?>
                     </div>
                 <?php } ?>
             </div>
         </div>
         <?php
-        $this->script();
     }
 
     /**
-     * JavaScript code.
+     * @param $value
+     *
+     * @return string
      */
-    private function script() {
-        ?>
-        <script>
-          jQuery(document).ready(function ($, undefined) {
-            //Initiate Color Picker
-            $('.wp-color-picker-field').wpColorPicker();
-            // Switches option sections
-            $('.group').hide();
-            var activetab = '';
-            if (typeof(localStorage) !== undefined) {
-              activetab = localStorage.getItem("activetab");
-            }
-            if (activetab != '' && $(activetab).length) {
-              $(activetab).fadeIn();
-            } else {
-              $('.group:first').fadeIn();
-            }
-            $('.group .collapsed').each(function () {
-              $(this).find('input:checked').parent().parent().parent().nextAll().each(
-                function () {
-                  if ($(this).hasClass('last')) {
-                    $(this).removeClass('hidden');
-                    return false;
-                  }
-                  $(this).filter('.hidden').removeClass('hidden');
-                });
-            });
+    private function getTheImage( $value ): string {
+        $image_id = ! empty( $value ) ? Common::urlToAttachmentID( $value ) : '';
 
-            if (activetab != '' && $(activetab + '-tab').length) {
-              $(activetab + '-tab').addClass('nav-tab-active');
-            }
-            else {
-              $('.nav-tab-wrapper a:first').addClass('nav-tab-active');
-            }
-            $('.nav-tab-wrapper a').click(function (evt) {
-              $('.nav-tab-wrapper a').removeClass('nav-tab-active');
-              $(this).addClass('nav-tab-active').blur();
-              var clicked_group = $(this).attr('href');
-              if (typeof(localStorage) !== undefined) {
-                localStorage.setItem("activetab", $(this).attr('href'));
-              }
-              $('.group').hide();
-              $(clicked_group).fadeIn();
-              evt.preventDefault();
-            });
-          });
-        </script>
-        <?php
+        if ( ! empty( $image_id ) ) {
+            $html = '<div class="alignleft">' .
+                    wp_get_attachment_image(
+                        $image_id,
+                        [ 50, 50, ]
+                    ) . '</div>';
+        } else {
+            $html = '<div class="alignleft"><img src="//placehold.it/50?text=FM"></div>';
+        }
+
+        return $html;
     }
 }
