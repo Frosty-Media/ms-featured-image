@@ -24,6 +24,7 @@ if ( version_compare( phpversion(), '7.0.1', '>=' ) ) {
 
     ( new \FrostyMedia\MSFeaturedImage\Psr4Autoloader() )
         ->addNamespace( 'FrostyMedia\MSFeaturedImage', __DIR__ . '/src' )
+        ->addNamespace( 'FrostyMedia\MSFeaturedImage\Admin', __DIR__ . '/src/Admin' )
         ->register();
 
     define( \FrostyMedia\MSFeaturedImage\FeaturedImage::class . '_FILE', __FILE__ );
