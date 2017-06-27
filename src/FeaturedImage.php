@@ -45,6 +45,12 @@ class FeaturedImage {
      */
     private function includes() {
         include_once __DIR__ . '/functions.php';
+        if ( ! class_exists( FeaturedImageAdmin::class ) ) {
+            include_once __DIR__ . '/Admin/FeaturedImageAdmin.php';
+        }
+        if ( ! class_exists( SettingsApi::class ) ) {
+            include_once __DIR__ . '/Admin/SettingsAPI.php';
+        }
     }
 
     /**

@@ -3,7 +3,7 @@
  * Plugin Name: Multisite Featured Image
  * Plugin URI: https://frosty.media/plugins/multisite-featured-image/
  * Description: Adds a featured image to each site in a WordPress Multisite Network.
- * Version: 3.0.3
+ * Version: 3.0.4
  * Author: Austin Passy
  * Author URI: https://austin.passy.co
  * Text Domain: ms-featured-image
@@ -24,7 +24,6 @@ if ( version_compare( phpversion(), '7.0.1', '>=' ) ) {
 
     ( new \FrostyMedia\MSFeaturedImage\Psr4Autoloader() )
         ->addNamespace( 'FrostyMedia\MSFeaturedImage', __DIR__ . '/src' )
-        ->addNamespace( 'FrostyMedia\MSFeaturedImage\Admin', __DIR__ . '/src/Admin' )
         ->register();
 
     define( \FrostyMedia\MSFeaturedImage\FeaturedImage::class . '_FILE', __FILE__ );
