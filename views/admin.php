@@ -6,6 +6,7 @@ if ( ! ( $this instanceof \FrostyMedia\MSFeaturedImage\Admin\FeaturedImageAdmin 
 
 ?>
 <div class="wrap">
+	<h1><?php  _e('Multisite Featured Image Settings','ms-featured-image'); ?></h1>
     <?php $this->getSettingsApi()->showForms(); ?>
 </div><?php
 
