@@ -111,9 +111,9 @@ class FeaturedImageAdmin implements WpHooksInterface {
                 'id' => 'overview',
                 'title' => __( 'Overview' ),
                 'content' => '<p>' . __( 'This screen manages options for the network as a whole. The first site is the main site in the network and each site in the network follows.', FeaturedImage::PLUGIN_SLUG ) . '</p>' .
-                             '<p>' . __( 'Each input allowd image URLs from anywhere.' ) . '</p>' .
+                             '<p>' . __( 'Each input allowd image URLs from anywhere.', FeaturedImage::PLUGIN_SLUG ) . '</p>' .
                              '<p>' . __( 'Click the &lsquo;Broswe&rsquo; button to open the default WordPress media browser to upload or use an image already in your network.', FeaturedImage::PLUGIN_SLUG ) . '</p>' .
-                             '<p>' . __( 'Clicking &lsquo;Clear&rsquo; empties the input filed directly to the left.' ) . '</p>' .
+                             '<p>' . __( 'Clicking &lsquo;Clear&rsquo; empties the input filed directly to the left.', FeaturedImage::PLUGIN_SLUG ) . '</p>' .
                              '<p>' . __( 'Clicking &lsquo;Save Changes&rsquo; saves each sites featured image (if correct a thumbnail should show up).', FeaturedImage::PLUGIN_SLUG ) . '</p>' .
                              '<p>' . sprintf( __( 'To call the image from any site or from the main site (network) use: %s.', FeaturedImage::PLUGIN_SLUG ), '<code>&lt;?php echo ms_featured_image_get_site_featured_image( $blog_id, $image_size, $image_html_output =  true );</code>' ) . '</p>',
             ]

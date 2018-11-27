@@ -201,8 +201,8 @@ class SettingsApi implements WpHooksInterface {
         $this->callbackText( $args );
         $html .= ob_get_clean();
 
-        $html .= '<input type="button" class="button wpsf-browse" id="' . $id . '_button" value="Browse" />';
-        $html .= '<input type="button" class="button wpsf-clear" id="' . $id . '_button_clear" value="Clear" />';
+        $html .= '<input type="button" class="button wpsf-browse" id="' . $id . '_button" value=" '.__('Browse','ms-featured-image').' " />';
+        $html .= '<input type="button" class="button wpsf-clear" id="' . $id . '_button_clear" value=" '.__('Clear','ms-featured-image').' " />';
 
         if ( $desc ) {
             $html .= sprintf( '<br><span class="description">%s</span>', $desc );
@@ -297,8 +297,6 @@ class SettingsApi implements WpHooksInterface {
      * This function displays every sections in a different form
      */
     public function showForms() { ?>
-        <div class="metabox-holder">
-            <div class="postbox">
                 <?php
                 $action = add_query_arg(
                     [
@@ -313,9 +311,7 @@ class SettingsApi implements WpHooksInterface {
                         <form method="post" action="<?php echo esc_url( $action ); ?>">
                             <?php settings_fields( $form['id'] ); ?>
                             <?php do_settings_sections( $form['id'] ); ?>
-                            <div style="padding-left: 10px">
-                                <?php submit_button( null, 'primary', FeaturedImage::PLUGIN_SLUG . '_submit' ); ?>
-                            </div>
+                            <?php submit_button( null, 'primary', FeaturedImage::PLUGIN_SLUG . '_submit' ); ?>
                         </form>
 
                         <?php
@@ -324,8 +320,6 @@ class SettingsApi implements WpHooksInterface {
                         } ?>
                     </div>
                 <?php } ?>
-            </div>
-        </div>
         <?php
     }
 

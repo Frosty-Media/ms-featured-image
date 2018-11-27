@@ -1,0 +1,160 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Multisite Featured Image\n"
+"POT-Creation-Date: 2018-11-27 12:12+0100\n"
+"PO-Revision-Date: 2018-11-27 12:12+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_FR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 2.2\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-Flags-xgettext: --add-comments=translators:\n"
+"X-Poedit-WPHeader: ms-featured-image.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
+
+#: ms-featured-image.php:59
+msgid ""
+"Multisite Featured Image plugin error: Your version of PHP is too old to run "
+"this plugin. You must be running PHP 7 or higher."
+msgstr ""
+"Erreur de l’extension Image mise en avant pour multisite : votre version de "
+"PHP est trop ancienne pour exécuter cette extension. Vous devez exécuter PHP "
+"7 ou supérieur."
+
+#: src/Admin/FeaturedImageAdmin.php:77
+msgid "Featured Site Image"
+msgstr "Image du site mise en avant"
+
+#: src/Admin/FeaturedImageAdmin.php:78 src/Admin/FeaturedImageAdmin.php:283
+msgid "Featured Image"
+msgstr "Image mise en avant"
+
+#: src/Admin/FeaturedImageAdmin.php:112
+msgid "Overview"
+msgstr "Aperçu"
+
+#: src/Admin/FeaturedImageAdmin.php:113
+msgid ""
+"This screen manages options for the network as a whole. The first site is "
+"the main site in the network and each site in the network follows."
+msgstr ""
+"Cet écran gère les options pour le réseau dans son ensemble. Le premier site "
+"est le site principal du réseau suivit de chaque du réseau."
+
+#: src/Admin/FeaturedImageAdmin.php:114
+msgid "Each input allowd image URLs from anywhere."
+msgstr "Chaque champ autorise des URL d'image de n'importe où."
+
+#: src/Admin/FeaturedImageAdmin.php:115
+msgid ""
+"Click the &lsquo;Broswe&rsquo; button to open the default WordPress media "
+"browser to upload or use an image already in your network."
+msgstr ""
+"Cliquez sur le bouton &lsquo;Parcourir&rsquo; pour ouvrir le gestionnaires "
+"des médias WordPress afin de téléverser une image ou d'en utiliser une de "
+"votre réseau."
+
+#: src/Admin/FeaturedImageAdmin.php:116
+msgid ""
+"Clicking &lsquo;Clear&rsquo; empties the input filed directly to the left."
+msgstr "Cliquer sur « Effacer » supprimera la valeur du champ."
+
+#: src/Admin/FeaturedImageAdmin.php:117
+msgid ""
+"Clicking &lsquo;Save Changes&rsquo; saves each sites featured image (if "
+"correct a thumbnail should show up)."
+msgstr ""
+"En cliquant sur «Enregistrer les modifications», vous enregistrez chaque "
+"image mise en avant (si tout va bien une vignette devrait apparaître)."
+
+#: src/Admin/FeaturedImageAdmin.php:118
+#, php-format
+msgid ""
+"To call the image from any site or from the main site (network) use: %s."
+msgstr ""
+"Pour afficher l'image depuis n'importe quel site ou depuis le site principal "
+"(réseau), utilisez : %s."
+
+#: src/Admin/FeaturedImageAdmin.php:122
+msgid "For more information:"
+msgstr "Pour plus d'informations :"
+
+#: src/Admin/FeaturedImageAdmin.php:122
+msgid ""
+"<a href=\"//frosty.media/plugins/multisite-featured-image/\" target=\"_blank"
+"\">Multisite Featured Image</a>"
+msgstr ""
+"<a href=\"//frosty.media/plugins/multisite-featured-image/\" target=\"_blank"
+"\">Multisite Featured Image</a>"
+
+#: src/Admin/FeaturedImageAdmin.php:122
+msgid "<a href=\"//frosty.media/docs/\" target=\"_blank\">Documentation</a>"
+msgstr "<a href=\"//frosty.media/docs/\" target=\"_blank\">Documentation</a>"
+
+#: src/Admin/FeaturedImageAdmin.php:144
+msgid "Nonce error!"
+msgstr "Erreur nonce !"
+
+#: src/Admin/FeaturedImageAdmin.php:213
+msgid "Image"
+msgstr "Image"
+
+#: src/Admin/FeaturedImageAdmin.php:254
+msgid "Sites"
+msgstr "Sites"
+
+#: src/Admin/FeaturedImageAdmin.php:285
+#, php-format
+msgid ""
+"Featured image for Site: <strong title=\"Site ID &ldquo;%1$s&rdquo;\">%1$s</"
+"strong>. <code>%2$s</code>"
+msgstr ""
+"Image mise en avant du site : <strong title=\"Site ID &ldquo;%1$s&rdquo;\">"
+"%1$s</strong>. <code>%2$s</code>"
+
+#: src/Admin/SettingsAPI.php:204
+msgid "Browse"
+msgstr "Parcourir"
+
+#: src/Admin/SettingsAPI.php:205
+msgid "Clear"
+msgstr "Effacer"
+
+#: views/admin.php:9
+msgid "Multisite Featured Image Settings"
+msgstr "Réglages des images mise en avant pour multisite"
+
+#: views/shortcode.php:14
+msgid "Sites in the network"
+msgstr "Sites du réseau"
+
+#. Plugin Name of the plugin/theme
+msgid "Multisite Featured Image"
+msgstr "Image mise en avant pour multisite"
+
+#. Plugin URI of the plugin/theme
+msgid "https://frosty.media/plugins/multisite-featured-image/"
+msgstr "https://frosty.media/plugins/multisite-featured-image/"
+
+#. Description of the plugin/theme
+msgid "Adds a featured image to each site in a WordPress Multisite Network."
+msgstr ""
+"Ajoute une image mise en avant pour chaque site d’un réseau WordPress "
+"multisite."
+
+#. Author of the plugin/theme
+msgid "Austin Passy"
+msgstr "Austin Passy"
+
+#. Author URI of the plugin/theme
+msgid "https://austin.passy.co"
+msgstr "https://austin.passy.co"
