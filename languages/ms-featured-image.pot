@@ -1,0 +1,142 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"Project-Id-Version: Multisite Featured Image\n"
+"POT-Creation-Date: 2018-11-27 12:13+0100\n"
+"PO-Revision-Date: 2018-11-27 12:13+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.2\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-Flags-xgettext: --add-comments=translators:\n"
+"X-Poedit-WPHeader: ms-featured-image.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
+
+#: ms-featured-image.php:59
+msgid ""
+"Multisite Featured Image plugin error: Your version of PHP is too old to run "
+"this plugin. You must be running PHP 7 or higher."
+msgstr ""
+
+#: src/Admin/FeaturedImageAdmin.php:77
+msgid "Featured Site Image"
+msgstr ""
+
+#: src/Admin/FeaturedImageAdmin.php:78 src/Admin/FeaturedImageAdmin.php:283
+msgid "Featured Image"
+msgstr ""
+
+#: src/Admin/FeaturedImageAdmin.php:112
+msgid "Overview"
+msgstr ""
+
+#: src/Admin/FeaturedImageAdmin.php:113
+msgid ""
+"This screen manages options for the network as a whole. The first site is "
+"the main site in the network and each site in the network follows."
+msgstr ""
+
+#: src/Admin/FeaturedImageAdmin.php:114
+msgid "Each input allowd image URLs from anywhere."
+msgstr ""
+
+#: src/Admin/FeaturedImageAdmin.php:115
+msgid ""
+"Click the &lsquo;Broswe&rsquo; button to open the default WordPress media "
+"browser to upload or use an image already in your network."
+msgstr ""
+
+#: src/Admin/FeaturedImageAdmin.php:116
+msgid ""
+"Clicking &lsquo;Clear&rsquo; empties the input filed directly to the left."
+msgstr ""
+
+#: src/Admin/FeaturedImageAdmin.php:117
+msgid ""
+"Clicking &lsquo;Save Changes&rsquo; saves each sites featured image (if "
+"correct a thumbnail should show up)."
+msgstr ""
+
+#: src/Admin/FeaturedImageAdmin.php:118
+#, php-format
+msgid ""
+"To call the image from any site or from the main site (network) use: %s."
+msgstr ""
+
+#: src/Admin/FeaturedImageAdmin.php:122
+msgid "For more information:"
+msgstr ""
+
+#: src/Admin/FeaturedImageAdmin.php:122
+msgid ""
+"<a href=\"//frosty.media/plugins/multisite-featured-image/\" target=\"_blank"
+"\">Multisite Featured Image</a>"
+msgstr ""
+
+#: src/Admin/FeaturedImageAdmin.php:122
+msgid "<a href=\"//frosty.media/docs/\" target=\"_blank\">Documentation</a>"
+msgstr ""
+
+#: src/Admin/FeaturedImageAdmin.php:144
+msgid "Nonce error!"
+msgstr ""
+
+#: src/Admin/FeaturedImageAdmin.php:213
+msgid "Image"
+msgstr ""
+
+#: src/Admin/FeaturedImageAdmin.php:254
+msgid "Sites"
+msgstr ""
+
+#: src/Admin/FeaturedImageAdmin.php:285
+#, php-format
+msgid ""
+"Featured image for Site: <strong title=\"Site ID &ldquo;%1$s&rdquo;\">%1$s</"
+"strong>. <code>%2$s</code>"
+msgstr ""
+
+#: src/Admin/SettingsAPI.php:204
+msgid "Browse"
+msgstr ""
+
+#: src/Admin/SettingsAPI.php:205
+msgid "Clear"
+msgstr ""
+
+#: views/admin.php:9
+msgid "Multisite Featured Image Settings"
+msgstr ""
+
+#: views/shortcode.php:14
+msgid "Sites in the network"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "Multisite Featured Image"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "https://frosty.media/plugins/multisite-featured-image/"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid "Adds a featured image to each site in a WordPress Multisite Network."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Austin Passy"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "https://austin.passy.co"
+msgstr ""

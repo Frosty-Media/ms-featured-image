@@ -19,6 +19,12 @@
 // Exit if accessed directly
 defined( 'ABSPATH' ) || exit;
 
+
+// i18n
+
+load_plugin_textdomain( 'ms-featured-image', false, basename( dirname( __FILE__ ) ) . '/languages/' );
+
+
 if ( version_compare( phpversion(), '7.0.1', '>=' ) ) {
     require_once __DIR__ . '/src/Psr4Autoloader.php';
 
