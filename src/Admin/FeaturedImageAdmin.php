@@ -74,8 +74,8 @@ class FeaturedImageAdmin implements WpHooksInterface {
     public function addPluginAdminMenu() {
         $this->plugin_screen_hook_suffix = add_submenu_page(
             'settings.php',
-            __( 'Featured Site Image', FeaturedImage::PLUGIN_SLUG ),
-            __( 'Featured Image', FeaturedImage::PLUGIN_SLUG ),
+            __( 'Multisite Featured Image(s)', 'ms-featured-image' ),
+            __( 'Featured Image(s)', 'ms-featured-image' ),
             'manage_options',
             FeaturedImage::PLUGIN_SLUG,
             [ $this, 'settingsCallback', ]
@@ -95,7 +95,7 @@ class FeaturedImageAdmin implements WpHooksInterface {
     /**
      * Add admin help tab
      */
-    function adminHelpTab() {
+    public function adminHelpTab() {
         $screen = get_current_screen();
 
         /**
@@ -110,16 +110,16 @@ class FeaturedImageAdmin implements WpHooksInterface {
             [
                 'id' => 'overview',
                 'title' => __( 'Overview' ),
-                'content' => '<p>' . __( 'This screen manages options for the network as a whole. The first site is the main site in the network and each site in the network follows.', FeaturedImage::PLUGIN_SLUG ) . '</p>' .
+                'content' => '<p>' . __( 'This screen manages options for the network as a whole. The first site is the main site in the network and each site in the network follows.', 'ms-featured-image' ) . '</p>' .
                              '<p>' . __( 'Each input allowd image URLs from anywhere.' ) . '</p>' .
-                             '<p>' . __( 'Click the &lsquo;Broswe&rsquo; button to open the default WordPress media browser to upload or use an image already in your network.', FeaturedImage::PLUGIN_SLUG ) . '</p>' .
+                             '<p>' . __( 'Click the &lsquo;Broswe&rsquo; button to open the default WordPress media browser to upload or use an image already in your network.', 'ms-featured-image' ) . '</p>' .
                              '<p>' . __( 'Clicking &lsquo;Clear&rsquo; empties the input filed directly to the left.' ) . '</p>' .
-                             '<p>' . __( 'Clicking &lsquo;Save Changes&rsquo; saves each sites featured image (if correct a thumbnail should show up).', FeaturedImage::PLUGIN_SLUG ) . '</p>' .
-                             '<p>' . sprintf( __( 'To call the image from any site or from the main site (network) use: %s.', FeaturedImage::PLUGIN_SLUG ), '<code>&lt;?php echo ms_featured_image_get_site_featured_image( $blog_id, $image_size, $image_html_output =  true );</code>' ) . '</p>',
+                             '<p>' . __( 'Clicking &lsquo;Save Changes&rsquo; saves each sites featured image (if correct a thumbnail should show up).', 'ms-featured-image' ) . '</p>' .
+                             '<p>' . sprintf( __( 'To call the image from any site or from the main site (network) use: %s.', 'ms-featured-image' ), '<code>&lt;?php echo ms_featured_image_get_site_featured_image( $blog_id, $image_size, $image_html_output =  true );</code>' ) . '</p>',
             ]
         );
 
-        $screen->set_help_sidebar( '<p><strong>' . __( 'For more information:', FeaturedImage::PLUGIN_SLUG ) . '</strong></p>' . '<p>' . __( '<a href="//frosty.media/plugins/multisite-featured-image/" target="_blank">Multisite Featured Image</a>', FeaturedImage::PLUGIN_SLUG ) . '</p>' . '<p>' . __( '<a href="//frosty.media/docs/" target="_blank">Documentation</a>', FeaturedImage::PLUGIN_SLUG ) . '</p>' );
+        $screen->set_help_sidebar( '<p><strong>' . __( 'For more information:', 'ms-featured-image' ) . '</strong></p>' . '<p>' . __( '<a href="//frosty.media/plugins/multisite-featured-image/" target="_blank">Multisite Featured Image</a>', 'ms-featured-image' ) . '</p>' . '<p>' . __( '<a href="//frosty.media/docs/" target="_blank">Documentation</a>', 'ms-featured-image' ) . '</p>' );
     }
 
     /**
@@ -133,9 +133,6 @@ class FeaturedImageAdmin implements WpHooksInterface {
      * Save the settings
      */
     public function saveNetworkSettings() {
-
-        //delete_site_option( FeaturedImage::OPTION_NAME );
-
         if ( isset( $_POST[ FeaturedImage::PLUGIN_SLUG . '_submit' ] ) &&
              ! empty( $_POST[ FeaturedImage::OPTION_NAME ] )
         ) {
@@ -209,8 +206,8 @@ class FeaturedImageAdmin implements WpHooksInterface {
 
         foreach ( $columns as $key => $title ) {
             // Put the Thumbnail column before the Blogname column
-            if ( $key == 'blogname' ) {
-                $new[ self::COLUMN_NAME ] = __( 'Image', FeaturedImage::PLUGIN_SLUG );
+            if ( $key === 'blogname' ) {
+                $new[ self::COLUMN_NAME ] = __( 'Image', 'ms-featured-image' );
             }
 
             $new[ $key ] = $title;
@@ -232,11 +229,15 @@ class FeaturedImageAdmin implements WpHooksInterface {
 
         switch ( $column_name ) {
             case self::COLUMN_NAME :
-                $options  = get_site_option( FeaturedImage::OPTION_NAME, [] );
-                $image_id = Common::urlToAttachmentID( $options[ 'blog_id_' . $blog_id ] );
+                $options = get_site_option( FeaturedImage::OPTION_NAME, [] );
+                if ( !empty($options[ 'blog_id_' . $blog_id] )) {
+                    $image_id = Common::urlToAttachmentID($options['blog_id_' . $blog_id]);
+                }
 
-                if ( ! is_null( $image_id ) ) {
+                if ( !empty( $image_id ) ) {
                     echo wp_get_attachment_image( $image_id, [ 50, 50 ] );
+                } else {
+                    echo apply_filters('ms_featured_image_placeholder_image', '<img src="//placehold.it/50?text=FM">');
                 }
                 break;
         }
@@ -251,7 +252,7 @@ class FeaturedImageAdmin implements WpHooksInterface {
         $sections = [
             [
                 'id' => FeaturedImage::OPTION_NAME,
-                'title' => __( 'Sites', FeaturedImage::PLUGIN_SLUG ),
+                'title' => __( 'Sites', 'ms-featured-image' ),
             ],
         ];
 
@@ -278,13 +279,22 @@ class FeaturedImageAdmin implements WpHooksInterface {
         $sites_array = [];
 
         foreach ( $sites as $key => $site ) {
+            $blog_details = \get_blog_details(absint($site['blog_id']));
             $sites_array[] = [
                 'name' => "blog_id_{$site['blog_id']}",
-                'label' => __( 'Featured Image', FeaturedImage::PLUGIN_SLUG ),
+                'label' => sprintf(
+                    \_x( '<span title="%s">Featured Image</span>', 'Settings page setting title for site featured image.', 'ms-featured-image' ),
+                    \sprintf(
+                        \esc_attr__('Featured Image for site titled &ldquo;%s&rdquo; with site ID &ldquo;%s&rdquo;', 'ms-featured-image'),
+                        \esc_attr($blog_details->blogname),
+                        \esc_attr($site['blog_id'])
+                    )
+                ),
                 'desc' => sprintf(
-                    __( 'Featured image for Site: <strong title="Site ID &ldquo;%1$s&rdquo;">%1$s</strong>. <code>%2$s</code>', FeaturedImage::PLUGIN_SLUG ),
-                    abs( $site['blog_id'] ),
-                    esc_attr( $site['domain'] . $site['path'] )
+                    \__('Featured Image for <code title="Site ID: &ldquo;%2$s&rdquo;">%1$s</code>, URL:<code>%3$s</code>', 'ms-featured-image'),
+                    \esc_attr($blog_details->blogname),
+                    \esc_attr( $site['blog_id'] ),
+                    \esc_attr( $site['domain'] . $site['path'] )
                 ),
                 'type' => 'file',
                 'default' => '',
