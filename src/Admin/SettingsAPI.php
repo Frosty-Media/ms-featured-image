@@ -297,6 +297,7 @@ class SettingsApi implements WpHooksInterface {
      * This function displays every sections in a different form
      */
     public function showForms() { ?>
+        <h2><?php esc_html_e( 'Multisite Featured Image Settings', 'ms-featured-image' ); ?></h2>
         <div class="metabox-holder">
             <div class="postbox">
                 <?php
@@ -309,7 +310,7 @@ class SettingsApi implements WpHooksInterface {
                     network_admin_url( 'settings.php' )
                 );
                 foreach ( $this->settings_sections as $form ) { ?>
-                    <div id="<?php echo $form['id']; ?>" class="group">
+                    <div id="<?php echo $form['id']; ?>" class="group inside">
                         <form method="post" action="<?php echo esc_url( $action ); ?>">
                             <?php settings_fields( $form['id'] ); ?>
                             <?php do_settings_sections( $form['id'] ); ?>
@@ -317,11 +318,6 @@ class SettingsApi implements WpHooksInterface {
                                 <?php submit_button( null, 'primary', FeaturedImage::PLUGIN_SLUG . '_submit' ); ?>
                             </div>
                         </form>
-
-                        <?php
-                        if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-                            echo '<pre>' . print_r( get_option( $form['id'], [] ), true ) . '</pre>';
-                        } ?>
                     </div>
                 <?php } ?>
             </div>
