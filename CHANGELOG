@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.1.0]
+### Updated
+- Removed all debug outputs. Mainly shown in the settings page when WP_DEBUG is enabled. Fixes #4
+- Updated all translations functions to use string literals.
+- Updates to the admin settings HTML and classes to have a better UI.
+- Cleanup settings page titles and descriptions per site.
+### Fixes
+- When a new site is added, and the network featured image settings haven't been updated, avoid throwing a
+fatal error, also fixes #4.
+### Added
+- Added fallback image for sites on the Network Sites page, which if filterable using
+`ms_featured_image_placeholder_image`.
+
 ## [3.0.2]
 ### Updated
 -  Missing autoloader for Admin directory
