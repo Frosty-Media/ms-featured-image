@@ -12,7 +12,7 @@ use FrostyMedia\MSFeaturedImage\Admin\SettingsApi;
  */
 class FeaturedImage {
 
-    const VERSION = '3.0.3';
+    const VERSION = '3.1.0';
     const OPTION_NAME = 'ms_featured_image';
     const PLUGIN_ID = 'multisite_featured_image';
     const PLUGIN_NAME = 'Multisite Featured Image';
@@ -32,7 +32,7 @@ class FeaturedImage {
      */
     public static function instance() {
         if ( null === self::$instance ) {
-            self::$instance = new self;
+            self::$instance = new self();
             self::$instance->includes();
             self::$instance->instantiations();
         }
@@ -65,13 +65,10 @@ class FeaturedImage {
     }
 
     /**
-     * @param bool $doing_ajax
-     *
+     * Helper for is_admin function.
      * @return bool
      */
-    private function isAdmin( bool $doing_ajax = true ): bool {
-        return $doing_ajax ?
-            is_admin() && ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) :
-            is_admin();
+    private function isAdmin(): bool {
+        return \is_admin() || \defined('DOING_AJAX') || \defined('DOING_CRON');
     }
 }
