@@ -12,7 +12,7 @@ use FrostyMedia\MSFeaturedImage\Admin\SettingsApi;
  */
 class FeaturedImage {
 
-    const VERSION = '3.1.0';
+    const VERSION = '3.2.0';
     const OPTION_NAME = 'ms_featured_image';
     const PLUGIN_ID = 'multisite_featured_image';
     const PLUGIN_NAME = 'Multisite Featured Image';
