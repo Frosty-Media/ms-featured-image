@@ -340,7 +340,7 @@ class SettingsApi implements WpHooksInterface {
                         [ 50, 50, ]
                     ) . '</div>';
         } else {
-            $html = '<div class="alignleft"><img src="//placehold.it/50?text=FM"></div>';
+            $html = '<div class="alignleft"><img src="//place-hold.it/50?text=FM"></div>';
         }
 
         return $html;

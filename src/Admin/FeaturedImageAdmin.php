@@ -237,7 +237,7 @@ class FeaturedImageAdmin implements WpHooksInterface {
                 if ( !empty( $image_id ) ) {
                     echo wp_get_attachment_image( $image_id, [ 50, 50 ] );
                 } else {
-                    echo apply_filters('ms_featured_image_placeholder_image', '<img src="//placehold.it/50?text=FM">');
+                    echo apply_filters('ms_featured_image_placeholder_image', '<img src="//place-hold.it/50?text=FM">');
                 }
                 break;
         }
