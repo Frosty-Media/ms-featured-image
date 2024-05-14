@@ -1,0 +1,38 @@
+{
+  "name": "frosty-media/ms-featured-image",
+  "type": "wordpress-plugin",
+  "license": "GPL-2.0-or-later",
+  "authors": [
+    {
+      "name": "Austin Passy",
+      "email": "367897+thefrosty@users.noreply.github.com",
+      "homepage": "https://austin.passy.co",
+      "role": "Developer"
+    }
+  ],
+  "config": {
+    "allow-plugins": {
+      "composer/installers": true,
+      "dealerdirect/phpcodesniffer-composer-installer": true,
+      "roots/wordpress-core-installer": true
+    },
+    "optimize-autoloader": true,
+    "platform": {
+      "php": "7.0"
+    },
+    "preferred-install": "dist",
+    "sort-packages": true
+  },
+  "require": {
+    "php": "^7.0"
+  },
+  "require-dev": {
+    "roots/wordpress-no-content": "^6.4",
+    "wp-cli/wp-cli-bundle": "^2.7"
+  },
+  "autoload": {
+    "psr-4": {
+      "FrostyMedia\\MSFeaturedImage\\": "src/"
+    }
+  }
+}
