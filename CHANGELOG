@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.2.0]
+### Updated
+- Changed placehold.it URL (broken) to the new place-hold.it URL.
+- Bump minimum PHP version to >= 7.4.
+### Fixes
+- Resolved `network_admin_notices` hook callback on incorrect function.
+### Added
+- In preparation for the next major version, add composer.json.
+
 ## [3.1.0]
 ### Updated
 - Removed all debug outputs. Mainly shown in the settings page when WP_DEBUG is enabled. Fixes #4
