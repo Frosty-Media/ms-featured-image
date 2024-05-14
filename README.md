@@ -2,13 +2,13 @@
 
 * Contributors: [thefrosty](https://github.com/thefrosty)
 * Tags: plugin, wordpress, multisite, multisite-network, featured-image 
-* Requires at least: 4.6
-* Requires PHP: 7.0.1
-* Tested up to: 4.9.8
+* Requires at least: 6.0
+* Requires PHP: 7.4
+* Tested up to: 6.5.3
 * Stable tag: master
 * Donate link: [PayPal](https://www.paypal.me/AustinPassy)
 * License: GPLv2 or later
-* License URI: http://www.gnu.org/licenses/gpl-2.0.html
+* License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 Adds a featured image to each site in a WordPress Multisite Network.
 

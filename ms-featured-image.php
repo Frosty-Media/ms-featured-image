@@ -3,7 +3,7 @@
  * Plugin Name: Multisite Featured Image
  * Plugin URI: https://frosty.media/plugins/multisite-featured-image/
  * Description: Adds a featured image to each site in a WordPress Multisite Network.
- * Version: 3.1.0
+ * Version: 3.2.0
  * Author: Austin Passy
  * Author URI: https://austin.passy.co
  * Text Domain: ms-featured-image
@@ -13,7 +13,7 @@
  * GitHub Plugin URI: https://github.com/Frosty-Media/ms-featured-image
  * GitHub Branch: master
  * Requires WP: 6.0
- * Requires PHP: 7.0.1
+ * Requires PHP: 7.4
  */
 
 use FrostyMedia\MSFeaturedImage\FeaturedImage;
@@ -22,7 +22,7 @@ use FrostyMedia\MSFeaturedImage\Psr4Autoloader;
 // Exit if accessed directly
 defined('ABSPATH') || exit;
 
-if (version_compare(phpversion(), '7.0.1', '>=')) {
+if (version_compare(phpversion(), '7.4', '>=')) {
     require_once __DIR__ . '/src/Psr4Autoloader.php';
 
     (new Psr4Autoloader())->addNamespace('FrostyMedia\MSFeaturedImage', __DIR__ . '/src')->register();
@@ -53,7 +53,7 @@ function _ms_featured_image_php_version_error()
 function _ms_featured_image_php_version_text()
 {
     return esc_html__(
-        'Multisite Featured Image plugin error: Your version of PHP is too old to run this plugin. You must be running PHP 7 or higher.',
+        'Multisite Featured Image plugin error: Your version of PHP is too old to run this plugin. You must be running PHP 7.4 or higher.',
         'ms-featured-image'
     );
 }
