@@ -18,13 +18,13 @@
     },
     "optimize-autoloader": true,
     "platform": {
-      "php": "7.0"
+      "php": "7.4"
     },
     "preferred-install": "dist",
     "sort-packages": true
   },
   "require": {
-    "php": "^7.0"
+    "php": "^7.4"
   },
   "require-dev": {
     "roots/wordpress-no-content": "^6.4",
