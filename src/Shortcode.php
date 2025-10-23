@@ -79,7 +79,7 @@ class Shortcode implements WpHooksInterface {
 
         $where = ! empty( $ignore_blog_ids ) ?
             "WHERE blog_id NOT IN (" . implode( ',', array_map( 'absint', $ignore_blog_ids ) ) . ") AND public = 1 AND archived = 0" :
-            'WHERE public = 1';
+            'WHERE public = 1 AND archived = 0';
 
         $blogs = $wpdb->get_results(
             "SELECT blog_id, domain, path FROM $wpdb->blogs $where ORDER BY path"
