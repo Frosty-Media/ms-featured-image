@@ -4,7 +4,7 @@
 * Tags: plugin, wordpress, multisite, multisite-network, featured-image 
 * Requires at least: 6.0
 * Requires PHP: 7.4
-* Tested up to: 6.5.3
+* Tested up to: 6.8.3
 * Stable tag: master
 * Donate link: [PayPal](https://www.paypal.me/AustinPassy)
 * License: GPLv2 or later
