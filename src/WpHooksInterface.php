@@ -11,5 +11,5 @@ namespace FrostyMedia\MSFeaturedImage;
  */
 interface WpHooksInterface {
 
-    public function addHooks();
+    public function addHooks(): void;
 }

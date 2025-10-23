@@ -35,7 +35,8 @@ class SettingsApi implements WpHooksInterface {
     /**
      * Add class hooks.
      */
-    public function addHooks() {
+    public function addHooks(): void
+    {
         add_action( 'admin_enqueue_scripts', [ $this, 'adminEnqueueScripts' ] );
     }
 
