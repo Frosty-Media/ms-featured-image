@@ -9,14 +9,14 @@ namespace FrostyMedia\MSFeaturedImage;
  */
 class Shortcode implements WpHooksInterface {
 
-    const IGNORE_BLOG_ID = 'ignore-blog-id';
-    const IGNORE_BLOG_IDS = 'ignore-blog-ids';
-    const SHORTCODE_SLUG = 'multisite-featured-image';
+    public const IGNORE_BLOG_ID = 'ignore-blog-id';
+    public const IGNORE_BLOG_IDS = 'ignore-blog-ids';
+    public const SHORTCODE_SLUG = 'multisite-featured-image';
 
     /**
      * Add class hooks.
      */
-    public function addHooks() {
+    public function addHooks(): void {
         add_action( 'init', [ $this, 'addShortcode' ] );
         add_action( 'wp_enqueue_scripts', [ $this, 'enqueueScripts' ] );
     }
@@ -24,17 +24,19 @@ class Shortcode implements WpHooksInterface {
     /**
      * Add the shortcode.
      */
-    public function addShortcode() {
+    public function addShortcode(): void
+    {
         add_shortcode( self::SHORTCODE_SLUG, [ $this, 'allSitesShortcode' ] );
     }
 
     /**
      * Register shortcode styles.
      */
-    public function enqueueScripts() {
+    public function enqueueScripts(): void
+    {
         wp_register_style(
             FeaturedImage::PLUGIN_SLUG,
-            plugins_url( 'assets/css/sites.css', dirname( __FILE__ ) ),
+            plugins_url( 'assets/css/sites.css', __DIR__),
             [],
             FeaturedImage::VERSION
         );
@@ -47,7 +49,8 @@ class Shortcode implements WpHooksInterface {
      *
      * @return string
      */
-    public function allSitesShortcode( $atts ) {
+    public function allSitesShortcode( $atts ): string
+    {
         $site_id = defined( 'SITE_ID_CURRENT_SITE' ) && is_numeric( SITE_ID_CURRENT_SITE ) ?
             SITE_ID_CURRENT_SITE : null;
 
@@ -75,7 +78,7 @@ class Shortcode implements WpHooksInterface {
         global $wpdb;
 
         $where = ! empty( $ignore_blog_ids ) ?
-            "WHERE blog_id NOT IN (" . implode( ',', array_map( 'absint', $ignore_blog_ids ) ) . ") AND public = 1" :
+            "WHERE blog_id NOT IN (" . implode( ',', array_map( 'absint', $ignore_blog_ids ) ) . ") AND public = 1 AND archived = 0" :
             'WHERE public = 1';
 
         $blogs = $wpdb->get_results(
