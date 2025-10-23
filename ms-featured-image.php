@@ -22,7 +22,7 @@ use FrostyMedia\MSFeaturedImage\Psr4Autoloader;
 // Exit if accessed directly
 defined('ABSPATH') || exit;
 
-if (version_compare(phpversion(), '7.4', '>=')) {
+if (PHP_VERSION_ID >= 70400) {
     require_once __DIR__ . '/src/Psr4Autoloader.php';
 
     (new Psr4Autoloader())->addNamespace('FrostyMedia\MSFeaturedImage', __DIR__ . '/src')->register();
