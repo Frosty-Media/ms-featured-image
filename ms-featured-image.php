@@ -41,7 +41,7 @@ if (version_compare(phpversion(), '7.4', '>=')) {
 /**
  * Admin notice for incompatible versions of PHP.
  */
-function _ms_featured_image_php_version_error()
+function _ms_featured_image_php_version_error(): void
 {
     printf('<div class="error"><p>%s</p></div>', _ms_featured_image_php_version_text());
 }
@@ -50,7 +50,7 @@ function _ms_featured_image_php_version_error()
  * String describing the minimum PHP version.
  * @return string
  */
-function _ms_featured_image_php_version_text()
+function _ms_featured_image_php_version_text(): string
 {
     return esc_html__(
         'Multisite Featured Image plugin error: Your version of PHP is too old to run this plugin. You must be running PHP 7.4 or higher.',
