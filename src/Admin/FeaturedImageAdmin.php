@@ -36,7 +36,8 @@ class FeaturedImageAdmin implements WpHooksInterface {
         $this->settings_api->addHooks();
     }
 
-    public function addHooks() {
+    public function addHooks(): void
+    {
         add_action( 'admin_enqueue_scripts', [ $this, 'enqueueAdminScripts' ] );
         add_action( 'network_admin_menu', [ $this, 'addPluginAdminMenu' ] );
         add_action( 'load-' . $this->settings_api->getSettingsPageHook(),
