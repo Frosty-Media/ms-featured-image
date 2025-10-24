@@ -9,17 +9,27 @@
   "description": "",
   "example": {},
   "attributes": {
-    "blogIds": {
-      "type": "string",
-      "default": ""
+    "columns": {
+      "type": "number",
+      "default": 3
+    },
+    "showDescription": {
+      "type": "boolean",
+      "default": true
+    },
+    "showPlaceholder": {
+      "type": "boolean",
+      "default": true
     }
   },
   "supports": {
-    "html": false
+    "html": false,
+    "align": ["wide", "full"]
   },
   "textdomain": "ms-featured-image",
   "editorScript": "file:../build/index.js",
   "editorStyle": "file:../build/index.css",
   "style": "file:../build/style-index.css",
-  "viewScript": "file:../build/view.js"
+  "viewScript": "file:../build/view.js",
+  "render": "file:./render.php"
 }

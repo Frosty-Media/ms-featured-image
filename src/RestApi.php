@@ -6,7 +6,9 @@ namespace FrostyMedia\MSFeaturedImage;
 
 use WP_Error;
 use WP_Http;
+use WP_HTTP_Response;
 use WP_REST_Request;
+use WP_REST_Response;
 use WP_REST_Server;
 use function esc_html__;
 use function explode;
@@ -69,13 +71,13 @@ class RestApi implements WpHooksInterface
         ];
 
         // /ms-featured-image/v1/blog/?blog_id=1
-        register_rest_route('ms-featured-image/v1', '/blog)', $args);
+        register_rest_route('ms-featured-image/v1', '/blog', $args);
 
         // /ms-featured-image/v1/blog/1
         register_rest_route('ms-featured-image/v1', '/blog/(?P<blog_id>\d+)', $args);
     }
 
-    public function getSites(WP_REST_Request $request)
+    public function getSites(WP_REST_Request $request): WP_Error|WP_REST_Response|WP_HTTP_Response
     {
         if (!is_multisite()) {
             return rest_ensure_response(
@@ -91,7 +93,7 @@ class RestApi implements WpHooksInterface
         return rest_ensure_response($this->getAllBlogs($exclude ? explode(',', $exclude) : []));
     }
 
-    public function getBlogs(WP_REST_Request $request)
+    public function getBlogs(WP_REST_Request $request): WP_Error|WP_REST_Response|WP_HTTP_Response
     {
         if (!is_multisite()) {
             return rest_ensure_response(

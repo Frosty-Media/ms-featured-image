@@ -3,7 +3,7 @@
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-i18n/
  */
-import { __ } from '@wordpress/i18n'
+import { __ } from '@wordpress/i18n';
 
 /**
  * React hook that is used to mark the block wrapper element.
@@ -11,16 +11,10 @@ import { __ } from '@wordpress/i18n'
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#useblockprops
  */
-import { useBlockProps, InspectorControls } from '@wordpress/block-editor'
-/**
- * WordPress dependencies
- */
-import {
-  PanelBody,
-  TextControl
-} from '@wordpress/components'
-import { useState, useEffect } from '@wordpress/element'
-import apiFetch from '@wordpress/api-fetch'
+import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
+import { PanelBody, RangeControl, ToggleControl, Notice } from '@wordpress/components';
+import { useState, useEffect } from '@wordpress/element';
+import apiFetch from '@wordpress/api-fetch';
 
 /**
  * Lets webpack process CSS, SASS or SCSS files referenced in JavaScript files.
@@ -28,7 +22,7 @@ import apiFetch from '@wordpress/api-fetch'
  *
  * @see https://www.npmjs.com/package/@wordpress/scripts#using-css
  */
-import './editor.scss'
+import './editor.scss';
 
 /**
  * The edit function describes the structure of your block in the context of the
@@ -38,94 +32,128 @@ import './editor.scss'
  *
  * @return {Element} Element to render.
  */
-export default function Edit ({ attributes, setAttributes }) {
-  const {
-    excludes
-  } = attributes
-
-  const [blogs, setBlogs] = useState([])
-  const [sites, setSites] = useState([])
-
-  const blockProps = useBlockProps({
-    className: 'pmc-product-card',
-    id: 'sites'
-  })
+export default function Edit({ attributes, setAttributes }) {
+  const { columns, showDescription, showPlaceholder } = attributes;
+  const [sites, setSites] = useState([]);
+  const [isMultisite, setIsMultisite] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (excludes && excludes.trim() !== '') {
-      apiFetch({ path: `/ms-featured-image/v1/sites/?exclude=${excludes}`, })
-        .then((data) => {
-          setSites(data)
-        })
-    } else {
-      apiFetch({ path: `/ms-featured-image/v1/sites/`, })
-        .then((data) => {
-          setSites(data)
-        })
-    }
-  }, [])
-
-  const getBlogId = () => {
-    if (sites && Object.keys(sites).length !== 0) {
-      Object.keys(sites).map((site) => {
-        useEffect(() => {
-          apiFetch({ path: `/ms-featured-image/v1/blog/?blog_id=${site.blog_id}`, })
-            .then((data) => {
-              setBlogs(data)
-            })
-        }, [])
+    // Check if this is a multisite and fetch sites
+    apiFetch({ path: '/ms-featured-image/v1/sites' })
+      .then((siteData) => {
+        setSites(siteData);
+        setLoading(false);
       })
-    }
+      .catch(() => {
+        // If sites endpoint fails, likely not multisite or no permission
+        setIsMultisite(false);
+        setLoading(false);
+      });
+  }, []);
+
+  const blockProps = useBlockProps({
+    className: `multisite-grid-columns-${columns}`,
+  });
+
+  if (loading) {
+    return (
+      <div {...blockProps}>
+        <div className="multisite-grid-loading">
+          {__('Loading multisite data...', 'ms-featured-image')}
+        </div>
+      </div>
+    );
   }
 
-  const render = () => {
-    // const image = Common::getSiteFeaturedImage( site.blog_id, 'full', false )
-    const url = (site) => new URL(site.path, site.domain)
-    if (blogs && Object.keys(blogs).length !== 0) {
-      Object.keys(blogs).map((site) => {
-        return (
-          <div>
-            <figure>
-              <figcaption>
-                <a href="{url(site)}" class="animate">{blog.option_value}</a>
-              </figcaption>
-              <a href="{url}"><img src="{image}" alt="{blog.option_value}"/></a>
-            </figure>
-          </div>
-        )
-      }
-    }
-
+  if (!isMultisite || sites.length === 0) {
+    return (
+      <>
+        <InspectorControls>
+          <PanelBody title={__('Grid Settings', 'ms-featured-image')}>
+            <RangeControl
+              label={__('Columns', 'ms-featured-image')}
+              value={columns}
+              onChange={(value) => setAttributes({ columns: value })}
+              min={1}
+              max={6}
+            />
+            <ToggleControl
+              label={__('Show Site Description', 'ms-featured-image')}
+              checked={showDescription}
+              onChange={(value) => setAttributes({ showDescription: value })}
+            />
+            <ToggleControl
+              label={__('Show Placeholder for Missing Images', 'ms-featured-image')}
+              checked={showPlaceholder}
+              onChange={(value) => setAttributes({ showPlaceholder: value })}
+            />
+          </PanelBody>
+        </InspectorControls>
+        <div {...blockProps}>
+          <Notice status="warning" isDismissible={false}>
+            {!isMultisite
+              ? __('This block only works on WordPress multisite networks.', 'ms-featured-image')
+              : __('No sites found in the multisite network.', 'ms-featured-image')
+            }
+          </Notice>
+        </div>
+      </>
+    );
   }
 
   return (
     <>
-
       <InspectorControls>
-        <PanelBody title={__('Multisite Featured Image Settings', 'ms-featured-image')} initialOpen={true}>
-          <TextControl
-            label={__('Blog ID(s)', 'ms-featured-image')}
-            value={excludes}
-            onChange={(value) => setAttributes({ excludes: value })}
-            help={__('Separate with commas or the Enter key.', 'ms-featured-image')}
+        <PanelBody title={__('Grid Settings', 'ms-featured-image')}>
+          <RangeControl
+            label={__('Columns', 'ms-featured-image')}
+            value={columns}
+            onChange={(value) => setAttributes({ columns: value })}
+            min={1}
+            max={6}
+          />
+          <ToggleControl
+            label={__('Show Site Description', 'ms-featured-image')}
+            checked={showDescription}
+            onChange={(value) => setAttributes({ showDescription: value })}
+          />
+          <ToggleControl
+            label={__('Show Placeholder for Missing Images', 'ms-featured-image')}
+            checked={showPlaceholder}
+            onChange={(value) => setAttributes({ showPlaceholder: value })}
           />
         </PanelBody>
       </InspectorControls>
 
-      <section {...blockProps}>
-        <header>
-          <h2>{__('Sites in the network', 'ms-featured-image')}</h2>
-        </header>
-
-        <article>
-          <div className="row">
-            <div>
-              {sites}
+      <div {...blockProps}>
+        <div className="multisite-grid">
+          {sites.map((site, index) => (
+            <div key={site.blog_id || index} className="multisite-grid-item">
+              <div className="multisite-grid-image">
+                {showPlaceholder && (
+                  <div className="multisite-grid-placeholder">
+                    <span>{__('Site Image', 'ms-featured-image')}</span>
+                  </div>
+                )}
+              </div>
+              <div className="multisite-grid-content">
+                <h3 className="multisite-grid-title">
+                  {site.name || __('Site Name', 'ms-featured-image')}
+                </h3>
+                {showDescription && (
+                  <p className="multisite-grid-description">
+                    {site.description || __('Site description will appear here.', 'ms-featured-image')}
+                  </p>
+                )}
+              </div>
             </div>
-          </div>
-        </article>
-      </section>
-
+          ))}
+        </div>
+        <div className="multisite-grid-editor-note">
+          {__('Preview: This block will display all sites in your multisite network with their featured images on the frontend.', 'ms-featured-image')}
+        </div>
+      </div>
     </>
-  )
+  );
 }
