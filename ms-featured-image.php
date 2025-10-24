@@ -12,8 +12,8 @@
  * Network: true
  * GitHub Plugin URI: https://github.com/Frosty-Media/ms-featured-image
  * GitHub Branch: master
- * Requires WP: 6.0
- * Requires PHP: 7.4
+ * Requires WP: 6.8
+ * Requires PHP: 8.0
  */
 
 use FrostyMedia\MSFeaturedImage\FeaturedImage;
@@ -22,7 +22,7 @@ use FrostyMedia\MSFeaturedImage\Psr4Autoloader;
 // Exit if accessed directly
 defined('ABSPATH') || exit;
 
-if (version_compare(phpversion(), '7.4', '>=')) {
+if (PHP_VERSION_ID >= 80000) {
     require_once __DIR__ . '/src/Psr4Autoloader.php';
 
     (new Psr4Autoloader())->addNamespace('FrostyMedia\MSFeaturedImage', __DIR__ . '/src')->register();
@@ -30,12 +30,10 @@ if (version_compare(phpversion(), '7.4', '>=')) {
     define(FeaturedImage::class . '_FILE', __FILE__);
 
     FeaturedImage::instance();
+} elseif (defined('WP_CLI') && WP_CLI && method_exists('WP_CLI', 'warning')) {
+    WP_CLI::warning(_ms_featured_image_php_version_text());
 } else {
-    if (defined('WP_CLI') && WP_CLI && method_exists('WP_CLI', 'warning')) {
-        WP_CLI::warning(_ms_featured_image_php_version_text());
-    } else {
-        return add_action('network_admin_notices', '_ms_featured_image_php_version_error');
-    }
+    return add_action('network_admin_notices', '_ms_featured_image_php_version_error');
 }
 
 /**

@@ -1,0 +1,41 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "frosty-media/ms-featured-image",
+  "version": "0.1.0",
+  "title": "Multisite Featured Image",
+  "category": "widgets",
+  "icon": "multisite",
+  "description": "",
+  "example": {},
+  "attributes": {
+    "columns": {
+      "type": "number",
+      "default": 3
+    },
+    "size": {
+      "type": "string",
+      "default": "medium",
+      "enum": [
+        "thumbnail",
+        "medium",
+        "large",
+        "full"
+      ]
+    },
+    "showPlaceholder": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "supports": {
+    "html": false,
+    "align": ["wide", "full"]
+  },
+  "textdomain": "ms-featured-image",
+  "editorScript": "file:../build/index.js",
+  "editorStyle": "file:../build/index.css",
+  "style": "file:../build/style-index.css",
+  "viewScript": "file:../build/view.js",
+  "render": "file:./render.php"
+}
