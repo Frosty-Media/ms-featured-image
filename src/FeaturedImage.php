@@ -10,7 +10,6 @@ use function add_action;
 use function defined;
 use function get_site_option;
 use function is_admin;
-use function var_dump;
 
 /**
  * Class FeaturedImage
@@ -19,10 +18,8 @@ use function var_dump;
 class FeaturedImage
 {
 
-    public const VERSION = '3.2.0';
+    public const VERSION = '3.4.0';
     public const OPTION_NAME = 'ms_featured_image';
-    public const PLUGIN_ID = 'multisite_featured_image';
-    public const PLUGIN_NAME = 'Multisite Featured Image';
     public const PLUGIN_SLUG = 'ms-featured-image';
 
     /**
