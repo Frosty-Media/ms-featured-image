@@ -13,9 +13,15 @@
       "type": "number",
       "default": 3
     },
-    "showDescription": {
-      "type": "boolean",
-      "default": true
+    "size": {
+      "type": "string",
+      "default": "medium",
+      "enum": [
+        "thumbnail",
+        "medium",
+        "large",
+        "full"
+      ]
     },
     "showPlaceholder": {
       "type": "boolean",
