@@ -12,8 +12,8 @@
  * Network: true
  * GitHub Plugin URI: https://github.com/Frosty-Media/ms-featured-image
  * GitHub Branch: master
- * Requires WP: 6.0
- * Requires PHP: 7.4
+ * Requires WP: 6.8
+ * Requires PHP: 8.0
  */
 
 use FrostyMedia\MSFeaturedImage\FeaturedImage;

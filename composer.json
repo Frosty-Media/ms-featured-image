@@ -18,17 +18,18 @@
     },
     "optimize-autoloader": true,
     "platform": {
-      "php": "7.4"
+      "php": "8.0"
     },
     "preferred-install": "dist",
     "sort-packages": true
   },
   "require": {
-    "php": "^7.4"
+    "php": "^8.0"
   },
   "require-dev": {
-    "roots/wordpress-no-content": "^6.4",
-    "wp-cli/wp-cli-bundle": "^2.7"
+    "roots/wordpress-no-content": "^6.8",
+    "symfony/var-dumper": "^5.4 || ^6.4 || ^7.2",
+    "wp-cli/wp-cli-bundle": "^2.12"
   },
   "autoload": {
     "psr-4": {
