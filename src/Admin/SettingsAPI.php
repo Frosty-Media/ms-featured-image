@@ -7,6 +7,11 @@ namespace FrostyMedia\MSFeaturedImage\Admin;
 use FrostyMedia\MSFeaturedImage\Common;
 use FrostyMedia\MSFeaturedImage\FeaturedImage;
 use FrostyMedia\MSFeaturedImage\WpHooksInterface;
+use function absint;
+use function esc_url;
+use function is_numeric;
+use function sprintf;
+use function var_dump;
 
 /**
  * Class SettingsApi
@@ -60,7 +65,7 @@ class SettingsApi implements WpHooksInterface
      * Enqueue scripts and styles
      * @param string $hook
      */
-    public function adminEnqueueScripts($hook): void
+    public function adminEnqueueScripts(string $hook): void
     {
         if ($this->getSettingsPageHook() !== $hook) {
             return;
@@ -167,8 +172,8 @@ class SettingsApi implements WpHooksInterface
      */
     public function callbackText(array $args): void
     {
-        $value = esc_attr($this->getOption($args['id'], $args['section'], $args['std']));
-        $size = isset($args['size']) && !is_null($args['size']) ? $args['size'] : 'regular';
+        $value = $this->getOption($args['id'], $args['section'], $args['std']);
+        $size = $args['size'] ?? 'regular';
 
         $html = '';
 
@@ -177,11 +182,17 @@ class SettingsApi implements WpHooksInterface
         }
 
         $html .= sprintf(
-                '<input type="text" class="%1$s-text" id="%2$s[%3$s]" name="%2$s[%3$s]" value="%4$s"/>',
+                '<input type="text" class="%1$s-text" id="%2$s[%3$s]" name="%2$s[%3$s][url]" value="%4$s">',
                 $size,
                 $args['section'],
                 $args['id'],
-                $value
+                $value['url'] ?? ''
+        );
+        $html .= sprintf(
+                '<input type="hidden" name="%1$s[%2$s][id]" value="%3$s">',
+                $args['section'],
+                $args['id'],
+                $value['id'] ?? ''
         );
 
         echo $html;
@@ -193,7 +204,7 @@ class SettingsApi implements WpHooksInterface
      */
     public function callbackFile(array $args): void
     {
-        $value = esc_attr($this->getOption($args['id'], $args['section'], $args['std']));
+        $value = $this->getOption($args['id'], $args['section'], $args['std']);
         $id = $args['section'] . '[' . $args['id'] . ']';
         $desc = $args['desc'] ?? null;
 
@@ -202,15 +213,15 @@ class SettingsApi implements WpHooksInterface
         }
 
         $html = '<div class="alignone clear">';
-        $html .= $this->getTheImage($value);
+        $html .= $this->getTheImage($value['id'] ?? null);
         $html .= '<div class="alignleft" style="margin-left: 25px">';
 
         ob_start();
         $this->callbackText($args);
         $html .= ob_get_clean();
 
-        $html .= '<input type="button" class="button wpsf-browse" id="' . $id . '_button" value="Browse" />';
-        $html .= '<input type="button" class="button wpsf-clear" id="' . $id . '_button_clear" value="Clear" />';
+        $html .= '<input type="button" class="button wpsf-browse" id="' . $id . '_button" value="Browse">';
+        $html .= '<input type="button" class="button wpsf-clear" id="' . $id . '_button_clear" value="Clear">';
 
         if ($desc) {
             $html .= sprintf('<br><span class="description">%s</span>', $desc);
@@ -230,48 +241,16 @@ class SettingsApi implements WpHooksInterface
     public function sanitizeOptions(array $options): array
     {
         foreach ($options as $option_slug => $option_value) {
-            $sanitize_callback = $this->getSanitizeCallback($option_slug);
-
-            // If callback is set, call it
-            if ($sanitize_callback) {
-                $options[$option_slug] = call_user_func($sanitize_callback, $option_value);
-                continue;
-            }
-
-            // Treat everything that's not an array as a string
-            if (!is_array($option_value)) {
-                $options[$option_slug] = sanitize_text_field($option_value);
+            foreach ($option_value as $name => $value) {
+                if ($name === 'url') {
+                    $options[$option_slug][$name] = esc_url($value);
+                    continue;
+                }
+                $options[$option_slug][$name] = absint($value);
             }
         }
 
         return $options;
-    }
-
-    /**
-     * Get sanitation callback for given option slug
-     * @param string $slug option slug
-     * @return bool|callable string or bool false
-     */
-    private function getSanitizeCallback(string $slug = ''): bool|callable
-    {
-        if (empty($slug)) {
-            return false;
-        }
-
-        // Iterate over registered fields and see if we can find proper callback
-        foreach ($this->settings_fields as $section => $options) {
-            foreach ($options as $option) {
-                if ($option['name'] !== $slug) {
-                    continue;
-                }
-
-                // Return the callback name
-                return isset($option['sanitize_callback']) && is_callable($option['sanitize_callback']) ?
-                        $option['sanitize_callback'] : false;
-            }
-        }
-
-        return false;
     }
 
     /**
@@ -281,7 +260,7 @@ class SettingsApi implements WpHooksInterface
      * @param string $default default text if it's not found
      * @return string
      */
-    public function getOption(string $option, string $section, string $default = ''): string
+    public function getOption(string $option, string $section, string $default = ''): mixed
     {
         $options = get_site_option($section);
 
@@ -330,14 +309,12 @@ class SettingsApi implements WpHooksInterface
     }
 
     /**
-     * @param $value
+     * @param mixed $image_id
      * @return string
      */
-    private function getTheImage($value): string
+    private function getTheImage(mixed $image_id): string
     {
-        $image_id = !empty($value) ? Common::urlToAttachmentID($value) : '';
-
-        if (!empty($image_id)) {
+        if (is_numeric($image_id)) {
             $html = '<div class="alignleft">' . wp_get_attachment_image($image_id, [50, 50,]) . '</div>';
         } else {
             $html = '<div class="alignleft"><img src="https://placeholdit.com/50/dddddd/999999?text=FM" alt="Placeholder"></div>';
