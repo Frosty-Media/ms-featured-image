@@ -6,7 +6,9 @@ namespace FrostyMedia\MSFeaturedImage;
 
 use FrostyMedia\MSFeaturedImage\Admin\FeaturedImageAdmin;
 use FrostyMedia\MSFeaturedImage\Admin\SettingsApi;
+use function add_action;
 use function defined;
+use function get_site_option;
 use function is_admin;
 use function var_dump;
 
@@ -39,6 +41,7 @@ class FeaturedImage
             self::$instance = new self();
             self::$instance->includes();
             self::$instance->instantiations();
+            self::$instance->update();
         }
 
         return self::$instance;
@@ -70,6 +73,30 @@ class FeaturedImage
         } else {
             (new Shortcode())->addHooks();
         }
+    }
+
+    private function update(): void
+    {
+        if (!is_admin()) {
+            return;
+        }
+        add_action('shutdown', static function (): void {
+            $has_run = get_site_option(self::OPTION_NAME . '_update');
+            if ($has_run) {
+                return;
+            }
+            $options = get_site_option(self::OPTION_NAME, []);
+            foreach ($options as $option => $value) {
+                if (is_array($value)) {
+                    continue;
+                }
+                $image_id = Common::urlToAttachmentID($value);
+                $options[$option]['url'] = $value;
+                $options[$option]['id'] = $image_id;
+            }
+            update_site_option(self::OPTION_NAME, $options);
+            update_site_option(self::OPTION_NAME . '_update', 1);
+        });
     }
 
     /**
