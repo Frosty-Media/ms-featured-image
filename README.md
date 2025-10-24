@@ -32,7 +32,7 @@ attribute as a comma separated list.
 This will get the featured image of a specific site in the network. It excepts three
 parameters and return the URL (string):
 ```php
-namesapce FrostyMedia\MSFeaturedImage;
+namespace FrostyMedia\MSFeaturedImage;
  
 /**
  * Get the attachment image for a specific blog.
