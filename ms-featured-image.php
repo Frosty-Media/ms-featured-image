@@ -22,7 +22,7 @@ use FrostyMedia\MSFeaturedImage\Psr4Autoloader;
 // Exit if accessed directly
 defined('ABSPATH') || exit;
 
-if (PHP_VERSION_ID >= 70400) {
+if (PHP_VERSION_ID >= 80000) {
     require_once __DIR__ . '/src/Psr4Autoloader.php';
 
     (new Psr4Autoloader())->addNamespace('FrostyMedia\MSFeaturedImage', __DIR__ . '/src')->register();
@@ -30,12 +30,10 @@ if (PHP_VERSION_ID >= 70400) {
     define(FeaturedImage::class . '_FILE', __FILE__);
 
     FeaturedImage::instance();
+} elseif (defined('WP_CLI') && WP_CLI && method_exists('WP_CLI', 'warning')) {
+    WP_CLI::warning(_ms_featured_image_php_version_text());
 } else {
-    if (defined('WP_CLI') && WP_CLI && method_exists('WP_CLI', 'warning')) {
-        WP_CLI::warning(_ms_featured_image_php_version_text());
-    } else {
-        return add_action('network_admin_notices', '_ms_featured_image_php_version_error');
-    }
+    return add_action('network_admin_notices', '_ms_featured_image_php_version_error');
 }
 
 /**
