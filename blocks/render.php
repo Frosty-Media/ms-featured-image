@@ -18,6 +18,7 @@ $attributes ??= [];
 $columns = $attributes['columns'] ?? 3;
 $show_description = !isset($attributes['showDescription']) || $attributes['showDescription'];
 $show_placeholder = !isset($attributes['showPlaceholder']) || $attributes['showPlaceholder'];
+$size = $attributes['size'] ?? 'medium';
 
 // Get all sites in the network
 $sites = get_sites([
@@ -63,7 +64,7 @@ echo $block_wrapper_attributes; ?>>
 
                 foreach ($blogname as $name) {
                     $url = get_site_url($blog->blog_id);
-                    $image = Common::getSiteFeaturedImage($blog->blog_id, 'full', false);
+                    $image = Common::getSiteFeaturedImage($blog->blog_id, $size, false);
                     if (empty($image) && $show_placeholder) {
                         $image = sprintf(
                                 'https://placeholdit.com/600x400/dddddd/999999?text=%s',
