@@ -14,9 +14,14 @@
   },
   "files": [
     "assets",
-    "blocks",
+    "build",
+    "blocks/render.php",
     "src",
-    "views"
+    "views",
+    "CHANGELOG",
+    "ms-featured-image.php",
+    "README.md",
+    "uninstall.php"
   ],
   "devDependencies": {
     "@wordpress/scripts": "^30.15.0"
