@@ -23,7 +23,7 @@ jobs:
 
       - name: Create Artifact
         run: |
-          mkdir plugin-build
+          npm run build
           npm run plugin-zip
 
       - name: Upload artifact
