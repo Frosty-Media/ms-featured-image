@@ -1,19 +1,29 @@
-
-  {
-	"name": "ms-featured-image",
-	"version": "0.1.0",
-	"description": "A beautiful, accessible product card block for showcasing products with automatic data fetching and live preview.",
-	"main": "build/index.js",
-	"scripts": {
-		"build": "wp-scripts build blocks/index.js",
-		"format": "wp-scripts format blocks/index.js",
-		"lint:css": "wp-scripts lint-style blocks/index.js",
-		"lint:js": "wp-scripts lint-js blocks/index.js",
-		"packages-update": "wp-scripts packages-update",
-		"plugin-zip": "wp-scripts plugin-zip",
-		"start": "wp-scripts start blocks/index.js"
-	},
-    "devDependencies": {
-        "@wordpress/scripts": "^30.15.0"
-	}
+{
+  "name": "ms-featured-image",
+  "version": "0.1.0",
+  "description": "A beautiful, accessible product card block for showcasing products with automatic data fetching and live preview.",
+  "main": "build/index.js",
+  "scripts": {
+    "build": "wp-scripts build blocks/index.js",
+    "format": "wp-scripts format blocks/index.js",
+    "lint:css": "wp-scripts lint-style blocks/index.js",
+    "lint:js": "wp-scripts lint-js blocks/index.js",
+    "packages-update": "wp-scripts packages-update",
+    "plugin-zip": "wp-scripts plugin-zip",
+    "start": "wp-scripts start blocks/index.js"
+  },
+  "files": [
+    "assets",
+    "build",
+    "blocks/render.php",
+    "src",
+    "views",
+    "CHANGELOG",
+    "ms-featured-image.php",
+    "README.md",
+    "uninstall.php"
+  ],
+  "devDependencies": {
+    "@wordpress/scripts": "^30.15.0"
+  }
 }
