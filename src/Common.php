@@ -97,7 +97,7 @@ class Common
         bool $image = true
     ): string {
         $options = get_site_option(FeaturedImage::OPTION_NAME, []);
-        $image_id = self::urlToAttachmentID($options['blog_id_' . absint($blog_id)] ?? '');
+        $image_id = $options['blog_id_' . $blog_id]['id'] ?? null;
 
         if ($image) {
             return wp_get_attachment_image($image_id, $size);
