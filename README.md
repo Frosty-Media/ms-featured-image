@@ -2,8 +2,8 @@
 
 * Contributors: [thefrosty](https://github.com/thefrosty)
 * Tags: plugin, wordpress, multisite, multisite-network, featured-image 
-* Requires at least: 6.0
-* Requires PHP: 7.4
+* Requires at least: 6.8
+* Requires PHP: 8.0
 * Tested up to: 6.8.3
 * Stable tag: master
 * Donate link: [PayPal](https://www.paypal.me/AustinPassy)
