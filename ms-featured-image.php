@@ -12,6 +12,7 @@
  * Network: true
  * GitHub Plugin URI: https://github.com/Frosty-Media/ms-featured-image
  * GitHub Branch: master
+ * Release Asset: true
  * Requires WP: 6.8
  * Requires PHP: 8.0
  */
