@@ -29,7 +29,7 @@ $sites = get_sites([
 ]);
 
 if (empty($sites)) {
-    return sprintf(
+    printf(
             '<div class="multisite-grid-error">%s</div>',
             __('No sites found in the multisite network.', 'ms-featured-image')
     );
@@ -37,22 +37,41 @@ if (empty($sites)) {
 
 // Start output
 $block_wrapper_attributes = get_block_wrapper_attributes([
-        'class' => 'multisite-grid-columns-' . $columns,
+        'class' => 'container-fluid multisite-grid-columns-' . $columns,
+        'id' => 'sites',
 ]);
 
-ob_start();
 ?>
-    <div <?php
-    echo $block_wrapper_attributes; ?>>
-        <div class="multisite-grid">
+<section <?php
+echo $block_wrapper_attributes; ?>>
+    <header>
+        <h2><?php
+            esc_html_e('Sites in the network', 'ms-featured-image'); ?></h2>
+    </header>
+
+    <article>
+        <div class="row">
             <?php
+
+            $classes = apply_filters('ms_featured_image_wrapper_classes', [
+                    'col-xs-12',
+                    'col-sm-6',
+                    'col-md-4',
+            ]);
             foreach ($sites as $blog) :
                 $blogname = $allBlogs->getBlogNames((int)$blog->blog_id);
 
                 foreach ($blogname as $name) {
                     $url = get_site_url($blog->blog_id);
-                    $image = Common::getSiteFeaturedImage($blog->blog_id, 'full', false); ?>
-                    <div>
+                    $image = Common::getSiteFeaturedImage($blog->blog_id, 'full', false);
+                    if (empty($image) && $show_placeholder) {
+                        $image = sprintf(
+                                'https://placeholdit.com/600x400/dddddd/999999?text=%s',
+                                sanitize_text_field($name->option_value)
+                        );
+                    } ?>
+                    <div class="<?php
+                    echo implode(' ', array_map('sanitize_html_class', (array)$classes)); ?>">
                         <figure>
                             <figcaption>
                                 <a href="<?php
@@ -72,7 +91,5 @@ ob_start();
                 }
             endforeach; ?>
         </div>
-    </div>
-<?php
-
-return ob_get_clean();
+    </article>
+</section>
