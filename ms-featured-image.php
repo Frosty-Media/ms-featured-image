@@ -30,7 +30,7 @@ if (PHP_VERSION_ID >= 80000) {
 
     define(FeaturedImage::class . '_FILE', __FILE__);
 
-    FeaturedImage::instance();
+    add_action('plugins_loaded', [FeaturedImage::class, 'instance']);
 } elseif (defined('WP_CLI') && WP_CLI && method_exists('WP_CLI', 'warning')) {
     WP_CLI::warning(_ms_featured_image_php_version_text());
 } else {
