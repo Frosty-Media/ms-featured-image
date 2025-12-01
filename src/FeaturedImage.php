@@ -21,7 +21,7 @@ use const FILTER_VALIDATE_BOOLEAN;
 class FeaturedImage
 {
 
-    public const VERSION = '3.4.0';
+    public const VERSION = '3.4.1';
     public const OPTION_NAME = 'ms_featured_image';
     public const PLUGIN_SLUG = 'ms-featured-image';
 
