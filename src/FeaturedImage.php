@@ -6,11 +6,13 @@ namespace FrostyMedia\MSFeaturedImage;
 
 use FrostyMedia\MSFeaturedImage\Admin\FeaturedImageAdmin;
 use FrostyMedia\MSFeaturedImage\Admin\SettingsApi;
+use WP_Screen;
 use function add_action;
 use function defined;
+use function filter_var;
 use function get_site_option;
 use function is_admin;
-use function is_network_admin;
+use const FILTER_VALIDATE_BOOLEAN;
 
 /**
  * Class FeaturedImage
@@ -39,7 +41,6 @@ class FeaturedImage
             self::$instance = new self();
             self::$instance->includes();
             self::$instance->instantiations();
-            self::$instance->update();
         }
 
         return self::$instance;
@@ -71,16 +72,19 @@ class FeaturedImage
         } else {
             (new Shortcode())->addHooks();
         }
+        add_action('current_screen', function (WP_Screen $screen): void {
+            if (!$screen->in_admin('network') || !is_super_admin()) {
+                return;
+            }
+            $this->update();
+        });
     }
 
     private function update(): void
     {
-        if (!is_network_admin() && !is_super_admin()) {
-            return;
-        }
         add_action('shutdown', static function (): void {
             $has_run = get_site_option(self::OPTION_NAME . '_update');
-            if ($has_run) {
+            if (filter_var($has_run, FILTER_VALIDATE_BOOLEAN) === true) {
                 return;
             }
             $options = get_site_option(self::OPTION_NAME, []);
