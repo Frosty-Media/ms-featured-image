@@ -12,6 +12,7 @@ use function defined;
 use function filter_var;
 use function get_site_option;
 use function is_admin;
+use function update_site_option;
 use const FILTER_VALIDATE_BOOLEAN;
 
 /**
@@ -88,6 +89,10 @@ class FeaturedImage
                 return;
             }
             $options = get_site_option(self::OPTION_NAME, []);
+            if (empty($options)) {
+                update_site_option(self::OPTION_NAME . '_update', 1);
+                return;
+            }
             foreach ($options as $option => $value) {
                 if (is_array($value)) {
                     continue;
