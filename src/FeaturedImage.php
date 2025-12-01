@@ -10,6 +10,7 @@ use function add_action;
 use function defined;
 use function get_site_option;
 use function is_admin;
+use function is_network_admin;
 
 /**
  * Class FeaturedImage
@@ -74,7 +75,7 @@ class FeaturedImage
 
     private function update(): void
     {
-        if (!is_admin()) {
+        if (!is_network_admin() && !is_super_admin()) {
             return;
         }
         add_action('shutdown', static function (): void {
