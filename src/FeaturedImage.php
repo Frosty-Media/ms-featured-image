@@ -12,6 +12,7 @@ use function defined;
 use function filter_var;
 use function get_site_option;
 use function is_admin;
+use function update_site_option;
 use const FILTER_VALIDATE_BOOLEAN;
 
 /**
@@ -21,7 +22,7 @@ use const FILTER_VALIDATE_BOOLEAN;
 class FeaturedImage
 {
 
-    public const VERSION = '3.4.1';
+    public const VERSION = '3.4.2';
     public const OPTION_NAME = 'ms_featured_image';
     public const PLUGIN_SLUG = 'ms-featured-image';
 
@@ -88,6 +89,10 @@ class FeaturedImage
                 return;
             }
             $options = get_site_option(self::OPTION_NAME, []);
+            if (empty($options)) {
+                update_site_option(self::OPTION_NAME . '_update', 1);
+                return;
+            }
             foreach ($options as $option => $value) {
                 if (is_array($value)) {
                     continue;
