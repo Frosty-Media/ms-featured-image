@@ -15,7 +15,7 @@ use function sprintf;
  * Class SettingsApi
  * @package FrostyMedia\MSFeaturedImage\Admin
  */
-class SettingsApi implements WpHooksInterface
+class SettingsAPI implements WpHooksInterface
 {
 
     public const NONCE_KEY = '_msfi_nonce';

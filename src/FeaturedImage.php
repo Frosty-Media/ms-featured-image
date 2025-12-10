@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace FrostyMedia\MSFeaturedImage;
 
 use FrostyMedia\MSFeaturedImage\Admin\FeaturedImageAdmin;
-use FrostyMedia\MSFeaturedImage\Admin\SettingsApi;
+use FrostyMedia\MSFeaturedImage\Admin\SettingsAPI;
 use WP_Screen;
 use function add_action;
 use function defined;
@@ -57,7 +57,7 @@ class FeaturedImage
         if ($this->isAdmin() && !class_exists(FeaturedImageAdmin::class)) {
             include_once __DIR__ . '/Admin/FeaturedImageAdmin.php';
         }
-        if (!class_exists(SettingsApi::class)) {
+        if (!class_exists(SettingsAPI::class)) {
             include_once __DIR__ . '/Admin/SettingsAPI.php';
         }
     }
@@ -70,7 +70,7 @@ class FeaturedImage
         (new Block())->addHooks();
         (new RestApi())->addHooks();
         if ($this->isAdmin()) {
-            (new FeaturedImageAdmin(new SettingsApi()))->addHooks();
+            (new FeaturedImageAdmin(new SettingsAPI()))->addHooks();
         } else {
             (new Shortcode())->addHooks();
         }
