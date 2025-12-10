@@ -106,10 +106,10 @@ class SettingsAPI implements WpHooksInterface
     public function addField(string $section, string $field): void
     {
         $defaults = [
-                'name' => '',
-                'label' => '',
-                'desc' => '',
-                'type' => 'text',
+            'name' => '',
+            'label' => '',
+            'desc' => '',
+            'type' => 'text',
         ];
 
         $this->settings_fields[$section][] = wp_parse_args($field, $defaults);
@@ -137,23 +137,23 @@ class SettingsAPI implements WpHooksInterface
             foreach ($field as $option) {
                 $type = $option['type'] ?? 'text';
                 $args = [
-                        'id' => $option['name'],
-                        'desc' => $option['desc'] ?? '',
-                        'name' => $option['label'],
-                        'section' => $section,
-                        'size' => $option['size'] ?? null,
-                        'options' => $option['options'] ?? '',
-                        'std' => $option['default'] ?? '',
-                        'sanitize_callback' => $option['sanitize_callback'] ?? '',
+                    'id' => $option['name'],
+                    'desc' => $option['desc'] ?? '',
+                    'name' => $option['label'],
+                    'section' => $section,
+                    'size' => $option['size'] ?? null,
+                    'options' => $option['options'] ?? '',
+                    'std' => $option['default'] ?? '',
+                    'sanitize_callback' => $option['sanitize_callback'] ?? '',
                 ];
 
                 add_settings_field(
-                        $section . '[' . $option['name'] . ']',
-                        $option['label'],
-                        [$this, 'callback' . ucfirst($type),],
-                        $section,
-                        $section,
-                        $args
+                    $section . '[' . $option['name'] . ']',
+                    $option['label'],
+                    [$this, 'callback' . ucfirst($type),],
+                    $section,
+                    $section,
+                    $args
                 );
             }
         }
@@ -180,17 +180,17 @@ class SettingsAPI implements WpHooksInterface
         }
 
         $html .= sprintf(
-                '<input type="text" class="%1$s-text" id="%2$s[%3$s]" name="%2$s[%3$s][url]" value="%4$s">',
-                $size,
-                $args['section'],
-                $args['id'],
-                $value['url'] ?? ''
+            '<input type="text" class="%1$s-text" id="%2$s[%3$s]" name="%2$s[%3$s][url]" value="%4$s">',
+            $size,
+            $args['section'],
+            $args['id'],
+            $value['url'] ?? ''
         );
         $html .= sprintf(
-                '<input type="hidden" name="%1$s[%2$s][id]" value="%3$s">',
-                $args['section'],
-                $args['id'],
-                $value['id'] ?? ''
+            '<input type="hidden" name="%1$s[%2$s][id]" value="%3$s">',
+            $args['section'],
+            $args['id'],
+            $value['id'] ?? ''
         );
 
         echo $html;
@@ -277,12 +277,12 @@ class SettingsAPI implements WpHooksInterface
             <div class="postbox">
                 <?php
                 $action = add_query_arg(
-                        [
-                                'page' => FeaturedImage::PLUGIN_SLUG,
-                                'action' => FeaturedImage::PLUGIN_SLUG,
-                                self::NONCE_KEY => wp_create_nonce(FeaturedImage::PLUGIN_SLUG),
-                        ],
-                        network_admin_url('settings.php')
+                    [
+                        'page' => FeaturedImage::PLUGIN_SLUG,
+                        'action' => FeaturedImage::PLUGIN_SLUG,
+                        self::NONCE_KEY => wp_create_nonce(FeaturedImage::PLUGIN_SLUG),
+                    ],
+                    network_admin_url('settings.php')
                 );
                 foreach ($this->settings_sections as $form) { ?>
                     <div id="<?php
