@@ -223,10 +223,7 @@ class FeaturedImageAdmin implements WpHooksInterface
         return [
             [
                 'id' => FeaturedImage::OPTION_NAME,
-                'title' => sprintf(
-                    __('Sites in the %s Network', 'ms-featured-image'),
-                    $this->getNetworkName()
-                ),
+                'title' => __('All Sites', 'ms-featured-image'),
             ],
         ];
     }
@@ -237,8 +234,8 @@ class FeaturedImageAdmin implements WpHooksInterface
      */
     private function getSettingsFields(): array
     {
-        $network = get_network();
-        $sites = $this->getBlogSites(['network_id' => (int)$network?->blog_id]);
+        //$network = get_network();
+        $sites = $this->getBlogSites(/**['network_id' => (int)$network?->blog_id]*/);
         $sites_array = [];
 
         foreach ($sites as $site) {
