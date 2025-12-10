@@ -4,20 +4,18 @@ declare(strict_types=1);
 
 namespace FrostyMedia\MSFeaturedImage\Admin;
 
-use FrostyMedia\MSFeaturedImage\Common;
 use FrostyMedia\MSFeaturedImage\FeaturedImage;
 use FrostyMedia\MSFeaturedImage\WpHooksInterface;
 use function absint;
 use function esc_url;
 use function is_numeric;
 use function sprintf;
-use function var_dump;
 
 /**
  * Class SettingsApi
  * @package FrostyMedia\MSFeaturedImage\Admin
  */
-class SettingsApi implements WpHooksInterface
+class SettingsAPI implements WpHooksInterface
 {
 
     public const NONCE_KEY = '_msfi_nonce';
@@ -108,10 +106,10 @@ class SettingsApi implements WpHooksInterface
     public function addField(string $section, string $field): void
     {
         $defaults = [
-                'name' => '',
-                'label' => '',
-                'desc' => '',
-                'type' => 'text',
+            'name' => '',
+            'label' => '',
+            'desc' => '',
+            'type' => 'text',
         ];
 
         $this->settings_fields[$section][] = wp_parse_args($field, $defaults);
@@ -139,23 +137,23 @@ class SettingsApi implements WpHooksInterface
             foreach ($field as $option) {
                 $type = $option['type'] ?? 'text';
                 $args = [
-                        'id' => $option['name'],
-                        'desc' => $option['desc'] ?? '',
-                        'name' => $option['label'],
-                        'section' => $section,
-                        'size' => $option['size'] ?? null,
-                        'options' => $option['options'] ?? '',
-                        'std' => $option['default'] ?? '',
-                        'sanitize_callback' => $option['sanitize_callback'] ?? '',
+                    'id' => $option['name'],
+                    'desc' => $option['desc'] ?? '',
+                    'name' => $option['label'],
+                    'section' => $section,
+                    'size' => $option['size'] ?? null,
+                    'options' => $option['options'] ?? '',
+                    'std' => $option['default'] ?? '',
+                    'sanitize_callback' => $option['sanitize_callback'] ?? '',
                 ];
 
                 add_settings_field(
-                        $section . '[' . $option['name'] . ']',
-                        $option['label'],
-                        [$this, 'callback' . ucfirst($type),],
-                        $section,
-                        $section,
-                        $args
+                    $section . '[' . $option['name'] . ']',
+                    $option['label'],
+                    [$this, 'callback' . ucfirst($type),],
+                    $section,
+                    $section,
+                    $args
                 );
             }
         }
@@ -182,17 +180,17 @@ class SettingsApi implements WpHooksInterface
         }
 
         $html .= sprintf(
-                '<input type="text" class="%1$s-text" id="%2$s[%3$s]" name="%2$s[%3$s][url]" value="%4$s">',
-                $size,
-                $args['section'],
-                $args['id'],
-                $value['url'] ?? ''
+            '<input type="text" class="%1$s-text" id="%2$s[%3$s]" name="%2$s[%3$s][url]" value="%4$s">',
+            $size,
+            $args['section'],
+            $args['id'],
+            $value['url'] ?? ''
         );
         $html .= sprintf(
-                '<input type="hidden" name="%1$s[%2$s][id]" value="%3$s">',
-                $args['section'],
-                $args['id'],
-                $value['id'] ?? ''
+            '<input type="hidden" name="%1$s[%2$s][id]" value="%3$s">',
+            $args['section'],
+            $args['id'],
+            $value['id'] ?? ''
         );
 
         echo $html;
@@ -272,19 +270,18 @@ class SettingsApi implements WpHooksInterface
      * This function displays every section in a different form
      */
     public function showForms(): void
-    { ?>
-        <h2><?php
-            esc_html_e('Multisite Featured Image Settings', 'ms-featured-image'); ?></h2>
+    {
+        ?>
         <div class="metabox-holder">
             <div class="postbox">
                 <?php
                 $action = add_query_arg(
-                        [
-                                'page' => FeaturedImage::PLUGIN_SLUG,
-                                'action' => FeaturedImage::PLUGIN_SLUG,
-                                self::NONCE_KEY => wp_create_nonce(FeaturedImage::PLUGIN_SLUG),
-                        ],
-                        network_admin_url('settings.php')
+                    [
+                        'page' => FeaturedImage::PLUGIN_SLUG,
+                        'action' => FeaturedImage::PLUGIN_SLUG,
+                        self::NONCE_KEY => wp_create_nonce(FeaturedImage::PLUGIN_SLUG),
+                    ],
+                    network_admin_url('settings.php')
                 );
                 foreach ($this->settings_sections as $form) { ?>
                     <div id="<?php
@@ -297,7 +294,7 @@ class SettingsApi implements WpHooksInterface
                             do_settings_sections($form['id']); ?>
                             <div style="padding-left: 10px">
                                 <?php
-                                submit_button(null, 'primary', FeaturedImage::PLUGIN_SLUG . '_submit'); ?>
+                                submit_button(null, 'primary', FeaturedImage::SUBMIT); ?>
                             </div>
                         </form>
                     </div>
@@ -314,8 +311,8 @@ class SettingsApi implements WpHooksInterface
      */
     private function getTheImage(mixed $image_id): string
     {
-        if (is_numeric($image_id)) {
-            $html = '<div class="alignleft">' . wp_get_attachment_image($image_id, [50, 50,]) . '</div>';
+        if (is_numeric($image_id) && $image_id > 0) {
+            $html = '<div class="alignleft">' . wp_get_attachment_image($image_id, [50, 50]) . '</div>';
         } else {
             $html = '<div class="alignleft"><img src="https://placeholdit.com/50/dddddd/999999?text=FM" alt="Placeholder"></div>';
         }

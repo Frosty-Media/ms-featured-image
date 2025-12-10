@@ -4,15 +4,18 @@ declare(strict_types=1);
 
 namespace FrostyMedia\MSFeaturedImage\Admin;
 
+use FrostyMedia\MSFeaturedImage\AllBlogs;
 use FrostyMedia\MSFeaturedImage\Common;
 use FrostyMedia\MSFeaturedImage\FeaturedImage;
 use FrostyMedia\MSFeaturedImage\WpHooksInterface;
 use function __;
 use function _x;
+use function absint;
 use function esc_attr;
 use function esc_attr__;
 use function esc_url;
 use function get_blog_details;
+use function get_network;
 use function sprintf;
 
 /**
@@ -22,24 +25,19 @@ use function sprintf;
 class FeaturedImageAdmin implements WpHooksInterface
 {
 
-    public const COLUMN_NAME = FeaturedImage::PLUGIN_SLUG;
+    use AllBlogs;
 
-    /**
-     * Settings API
-     * @var SettingsApi|null
-     */
-    private ?SettingsApi $settings_api = null;
+    public const COLUMN_NAME = FeaturedImage::PLUGIN_SLUG;
 
     /** @var string|null $plugin_screen_hook_suffix */
     private ?string $plugin_screen_hook_suffix = null;
 
     /**
      * Initialize the plugin by loading admin scripts & styles and adding a settings page and menu.
-     * @param SettingsApi $settings_api
+     * @param SettingsAPI $settings_api
      */
-    public function __construct(SettingsApi $settings_api)
+    public function __construct(private SettingsAPI $settings_api)
     {
-        $this->settings_api = $settings_api;
         $this->settings_api->setSettingsPageHook(FeaturedImage::PLUGIN_SLUG);
         $this->settings_api->addHooks();
     }
@@ -60,9 +58,9 @@ class FeaturedImageAdmin implements WpHooksInterface
     }
 
     /**
-     * @return SettingsApi
+     * @return SettingsAPI
      */
-    public function getSettingsApi(): SettingsApi
+    public function getSettingsApi(): SettingsAPI
     {
         return $this->settings_api;
     }
@@ -128,20 +126,22 @@ class FeaturedImageAdmin implements WpHooksInterface
      */
     public function saveNetworkSettings(): void
     {
-        if (isset($_POST[FeaturedImage::PLUGIN_SLUG . '_submit']) && !empty($_POST[FeaturedImage::OPTION_NAME])
+        if (
+            isset($_POST[FeaturedImage::SUBMIT]) &&
+            !empty($_POST[FeaturedImage::OPTION_NAME])
         ) {
-            if (!wp_verify_nonce($_REQUEST[SettingsApi::NONCE_KEY], FeaturedImage::PLUGIN_SLUG)) {
+            if (!wp_verify_nonce($_REQUEST[SettingsAPI::NONCE_KEY], FeaturedImage::PLUGIN_SLUG)) {
                 wp_die(__('Nonce error!'));
             }
 
             $options = get_site_option(FeaturedImage::OPTION_NAME, []);
-            $sites = Common::objectToArray($this->getBlogSites());
+            $sites = $this->getBlogSites();
 
-            foreach ($sites as $option) {
+            foreach ($sites as $site) {
                 if (isset($options[0])) {
                     unset($options[0]);
                 }
-                $blog_id = $option['blog_id'];
+                $blog_id = $site->blog_id;
                 $options["blog_id_$blog_id"] = [
                     'url' => !empty($_POST[FeaturedImage::OPTION_NAME]["blog_id_$blog_id"]['url']) ?
                         esc_url($_POST[FeaturedImage::OPTION_NAME]["blog_id_$blog_id"]['url']) : '',
@@ -163,30 +163,6 @@ class FeaturedImageAdmin implements WpHooksInterface
             );
             exit;
         }
-    }
-
-    /**
-     * Get all blog ids, domains & path of blogs in the current network that are:
-     * - not archived
-     * - not spam
-     * - not deleted
-     * @return   array|false    The blog ids, domain & path | false if no matches.
-     */
-    private function getBlogSites(): bool|array
-    {
-        global $wpdb;
-
-        // Query all blogs from multi-site install
-        return $wpdb->get_results(
-            "
-			SELECT blog_id, domain, path FROM $wpdb->blogs
-			WHERE archived = '0'
-			AND spam = '0'
-			AND deleted = '0'
-			AND blog_id > 0
-			AND public = 1
-			ORDER BY blog_id"
-        );
     }
 
     /**
@@ -247,7 +223,7 @@ class FeaturedImageAdmin implements WpHooksInterface
         return [
             [
                 'id' => FeaturedImage::OPTION_NAME,
-                'title' => __('Sites', 'ms-featured-image'),
+                'title' => __('All Sites', 'ms-featured-image'),
             ],
         ];
     }
@@ -258,20 +234,12 @@ class FeaturedImageAdmin implements WpHooksInterface
      */
     private function getSettingsFields(): array
     {
-        /**
-         * $sites = Array (
-         *      [0] => Array (
-         *          [blog_id] => 1
-         *          [domain] => passy.co
-         *          [path] => /
-         *      )
-         * )
-         */
-        $sites = Common::objectToArray($this->getBlogSites());
+        //$network = get_network();
+        $sites = $this->getBlogSites(/**['network_id' => (int)$network?->blog_id]*/);
         $sites_array = [];
 
         foreach ($sites as $site) {
-            $blog_id = $site['blog_id'];
+            $blog_id = $site->blog_id;
             $blog_details = get_blog_details(absint($blog_id));
             $sites_array[] = [
                 'name' => "blog_id_$blog_id",
@@ -297,7 +265,7 @@ class FeaturedImageAdmin implements WpHooksInterface
                     ),
                     esc_attr($blog_details->blogname),
                     esc_attr($blog_id),
-                    esc_attr($site['domain'] . $site['path'])
+                    esc_attr($site->domain . $site->path)
                 ),
                 'type' => 'file',
                 'default' => '',
