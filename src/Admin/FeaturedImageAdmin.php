@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FrostyMedia\MSFeaturedImage\Admin;
 
+use FrostyMedia\MSFeaturedImage\AllBlogs;
 use FrostyMedia\MSFeaturedImage\Common;
 use FrostyMedia\MSFeaturedImage\FeaturedImage;
 use FrostyMedia\MSFeaturedImage\WpHooksInterface;
@@ -14,7 +15,7 @@ use function esc_attr;
 use function esc_attr__;
 use function esc_url;
 use function get_blog_details;
-use function get_sites;
+use function get_network;
 use function sprintf;
 
 /**
@@ -24,24 +25,19 @@ use function sprintf;
 class FeaturedImageAdmin implements WpHooksInterface
 {
 
-    public const COLUMN_NAME = FeaturedImage::PLUGIN_SLUG;
+    use AllBlogs;
 
-    /**
-     * Settings API
-     * @var SettingsApi|null
-     */
-    private ?SettingsApi $settings_api = null;
+    public const COLUMN_NAME = FeaturedImage::PLUGIN_SLUG;
 
     /** @var string|null $plugin_screen_hook_suffix */
     private ?string $plugin_screen_hook_suffix = null;
 
     /**
      * Initialize the plugin by loading admin scripts & styles and adding a settings page and menu.
-     * @param SettingsApi $settings_api
+     * @param SettingsAPI $settings_api
      */
-    public function __construct(SettingsApi $settings_api)
+    public function __construct(private SettingsAPI $settings_api)
     {
-        $this->settings_api = $settings_api;
         $this->settings_api->setSettingsPageHook(FeaturedImage::PLUGIN_SLUG);
         $this->settings_api->addHooks();
     }
@@ -62,9 +58,9 @@ class FeaturedImageAdmin implements WpHooksInterface
     }
 
     /**
-     * @return SettingsApi
+     * @return SettingsAPI
      */
-    public function getSettingsApi(): SettingsApi
+    public function getSettingsApi(): SettingsAPI
     {
         return $this->settings_api;
     }
@@ -134,7 +130,7 @@ class FeaturedImageAdmin implements WpHooksInterface
             isset($_POST[FeaturedImage::SUBMIT]) &&
             !empty($_POST[FeaturedImage::OPTION_NAME])
         ) {
-            if (!wp_verify_nonce($_REQUEST[SettingsApi::NONCE_KEY], FeaturedImage::PLUGIN_SLUG)) {
+            if (!wp_verify_nonce($_REQUEST[SettingsAPI::NONCE_KEY], FeaturedImage::PLUGIN_SLUG)) {
                 wp_die(__('Nonce error!'));
             }
 
@@ -167,23 +163,6 @@ class FeaturedImageAdmin implements WpHooksInterface
             );
             exit;
         }
-    }
-
-    /**
-     * Get all blog ids, domains & path of blogs in the current network that are:
-     * - not archived
-     * - not spam
-     * - not deleted
-     * @return \WP_Site[].
-     */
-    private function getBlogSites(): array
-    {
-        return get_sites([
-            'public' => 1,
-            'archived' => 0,
-            'spam' => 0,
-            'deleted' => 0,
-        ]);
     }
 
     /**
@@ -244,7 +223,10 @@ class FeaturedImageAdmin implements WpHooksInterface
         return [
             [
                 'id' => FeaturedImage::OPTION_NAME,
-                'title' => __('Sites', 'ms-featured-image'),
+                'title' => sprintf(
+                    __('Sites in the %s Network', 'ms-featured-image'),
+                    $this->getNetworkName()
+                ),
             ],
         ];
     }
@@ -255,7 +237,8 @@ class FeaturedImageAdmin implements WpHooksInterface
      */
     private function getSettingsFields(): array
     {
-        $sites =$this->getBlogSites();
+        $network = get_network();
+        $sites = $this->getBlogSites(['network_id' => (int)$network?->blog_id]);
         $sites_array = [];
 
         foreach ($sites as $site) {
