@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace FrostyMedia\MSFeaturedImage\Admin;
 
-use FrostyMedia\MSFeaturedImage\Common;
 use FrostyMedia\MSFeaturedImage\FeaturedImage;
 use FrostyMedia\MSFeaturedImage\WpHooksInterface;
 use function absint;
 use function esc_url;
 use function is_numeric;
 use function sprintf;
-use function var_dump;
 
 /**
  * Class SettingsApi
@@ -297,7 +295,7 @@ class SettingsApi implements WpHooksInterface
                             do_settings_sections($form['id']); ?>
                             <div style="padding-left: 10px">
                                 <?php
-                                submit_button(null, 'primary', FeaturedImage::PLUGIN_SLUG . '_submit'); ?>
+                                submit_button(null, 'primary', FeaturedImage::SUBMIT); ?>
                             </div>
                         </form>
                     </div>
@@ -314,8 +312,8 @@ class SettingsApi implements WpHooksInterface
      */
     private function getTheImage(mixed $image_id): string
     {
-        if (is_numeric($image_id)) {
-            $html = '<div class="alignleft">' . wp_get_attachment_image($image_id, [50, 50,]) . '</div>';
+        if (is_numeric($image_id) && $image_id > 0) {
+            $html = '<div class="alignleft">' . wp_get_attachment_image($image_id, [50, 50]) . '</div>';
         } else {
             $html = '<div class="alignleft"><img src="https://placeholdit.com/50/dddddd/999999?text=FM" alt="Placeholder"></div>';
         }
