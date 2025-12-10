@@ -270,9 +270,8 @@ class SettingsAPI implements WpHooksInterface
      * This function displays every section in a different form
      */
     public function showForms(): void
-    { ?>
-        <h2><?php
-            esc_html_e('Multisite Featured Image Settings', 'ms-featured-image'); ?></h2>
+    {
+        ?>
         <div class="metabox-holder">
             <div class="postbox">
                 <?php
