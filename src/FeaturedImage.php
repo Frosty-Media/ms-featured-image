@@ -25,6 +25,7 @@ class FeaturedImage
     public const VERSION = '3.4.2';
     public const OPTION_NAME = 'ms_featured_image';
     public const PLUGIN_SLUG = 'ms-featured-image';
+    public const SUBMIT = self::PLUGIN_SLUG . '_submit';
 
     /**
      * Instance of this class.
