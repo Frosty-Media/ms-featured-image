@@ -9,10 +9,12 @@ use FrostyMedia\MSFeaturedImage\FeaturedImage;
 use FrostyMedia\MSFeaturedImage\WpHooksInterface;
 use function __;
 use function _x;
+use function absint;
 use function esc_attr;
 use function esc_attr__;
 use function esc_url;
 use function get_blog_details;
+use function get_sites;
 use function sprintf;
 
 /**
@@ -128,20 +130,22 @@ class FeaturedImageAdmin implements WpHooksInterface
      */
     public function saveNetworkSettings(): void
     {
-        if (isset($_POST[FeaturedImage::PLUGIN_SLUG . '_submit']) && !empty($_POST[FeaturedImage::OPTION_NAME])
+        if (
+            isset($_POST[FeaturedImage::SUBMIT]) &&
+            !empty($_POST[FeaturedImage::OPTION_NAME])
         ) {
             if (!wp_verify_nonce($_REQUEST[SettingsApi::NONCE_KEY], FeaturedImage::PLUGIN_SLUG)) {
                 wp_die(__('Nonce error!'));
             }
 
             $options = get_site_option(FeaturedImage::OPTION_NAME, []);
-            $sites = Common::objectToArray($this->getBlogSites());
+            $sites = $this->getBlogSites();
 
-            foreach ($sites as $option) {
+            foreach ($sites as $site) {
                 if (isset($options[0])) {
                     unset($options[0]);
                 }
-                $blog_id = $option['blog_id'];
+                $blog_id = $site->blog_id;
                 $options["blog_id_$blog_id"] = [
                     'url' => !empty($_POST[FeaturedImage::OPTION_NAME]["blog_id_$blog_id"]['url']) ?
                         esc_url($_POST[FeaturedImage::OPTION_NAME]["blog_id_$blog_id"]['url']) : '',
@@ -170,23 +174,16 @@ class FeaturedImageAdmin implements WpHooksInterface
      * - not archived
      * - not spam
      * - not deleted
-     * @return   array|false    The blog ids, domain & path | false if no matches.
+     * @return \WP_Site[].
      */
-    private function getBlogSites(): bool|array
+    private function getBlogSites(): array
     {
-        global $wpdb;
-
-        // Query all blogs from multi-site install
-        return $wpdb->get_results(
-            "
-			SELECT blog_id, domain, path FROM $wpdb->blogs
-			WHERE archived = '0'
-			AND spam = '0'
-			AND deleted = '0'
-			AND blog_id > 0
-			AND public = 1
-			ORDER BY blog_id"
-        );
+        return get_sites([
+            'public' => 1,
+            'archived' => 0,
+            'spam' => 0,
+            'deleted' => 0,
+        ]);
     }
 
     /**
@@ -258,20 +255,11 @@ class FeaturedImageAdmin implements WpHooksInterface
      */
     private function getSettingsFields(): array
     {
-        /**
-         * $sites = Array (
-         *      [0] => Array (
-         *          [blog_id] => 1
-         *          [domain] => passy.co
-         *          [path] => /
-         *      )
-         * )
-         */
-        $sites = Common::objectToArray($this->getBlogSites());
+        $sites =$this->getBlogSites();
         $sites_array = [];
 
         foreach ($sites as $site) {
-            $blog_id = $site['blog_id'];
+            $blog_id = $site->blog_id;
             $blog_details = get_blog_details(absint($blog_id));
             $sites_array[] = [
                 'name' => "blog_id_$blog_id",
@@ -297,7 +285,7 @@ class FeaturedImageAdmin implements WpHooksInterface
                     ),
                     esc_attr($blog_details->blogname),
                     esc_attr($blog_id),
-                    esc_attr($site['domain'] . $site['path'])
+                    esc_attr($site->domain . $site->path)
                 ),
                 'type' => 'file',
                 'default' => '',
