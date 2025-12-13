@@ -15,8 +15,10 @@ use function esc_attr;
 use function esc_attr__;
 use function esc_url;
 use function get_blog_details;
-use function get_network;
 use function sprintf;
+use function wp_add_inline_style;
+use function wp_enqueue_script;
+use function wp_enqueue_style;
 
 /**
  * Class FeaturedImageAdmin
@@ -53,6 +55,7 @@ class FeaturedImageAdmin implements WpHooksInterface
             0
         );
 
+        add_action('admin_enqueue_scripts', [$this, 'adminEnqueueScripts']);
         add_filter('wpmu_blogs_columns', [$this, 'featuredImageColumn']);
         add_action('manage_sites_custom_column', [$this, 'featuredImageCustomColumn',], 10, 2);
     }
@@ -163,6 +166,24 @@ class FeaturedImageAdmin implements WpHooksInterface
             );
             exit;
         }
+    }
+
+    /**
+     * Enqueue our script(s).
+     * @param string $hook_suffix The current admin page.
+     */
+    public function adminEnqueueScripts(string $hook_suffix): void
+    {
+        if ($hook_suffix !== 'sites.php') {
+            return;
+        }
+
+        wp_register_style('ms-featured-image', '');
+        wp_enqueue_style('ms-featured-image');
+        $style = <<<'STYLE'
+.column-ms-featured-image {width:62px;}
+STYLE;
+        wp_add_inline_style('ms-featured-image', $style);
     }
 
     /**
