@@ -10,6 +10,7 @@ tests/clover.xml
 vendor/
 wordpress/
 composer.lock
+package-lock.json
 
 !data/.gitkeep
 
